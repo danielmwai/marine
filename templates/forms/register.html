@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block page_title %} 
+{{block.super}} Registration
+{% endblock page_title%}
+
+{% load staticfiles %}
+
+{% block style_code %}
+{% endblock style_code %}
+
+
+{% block javascript_code %}
+{% endblock javascript_code %}
+
+{% block primary %}
+
+<ol class="breadcrumb pull-right">
+  <li><a href="javascript:;">Home</a></li>
+  <li><a href="javascript:;">Page</a></li>
+  <li class="active">My Dashboard</li>
+</ol>
+<!-- end breadcrumb -->
+<!-- begin page-header -->
+<h1 class="page-header"><i class="fa fa-pencil"></i> Dashboard <small>Your orders</small></h1>
+<!-- end page-header -->
+
+<div class="panel panel-inverse">
+    <div class="panel-heading">
+        <div class="panel-heading-btn">
+
+            <a href="#" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
+
+            <a href="#" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+        </div>
+        <h4 class="panel-title">Dashboard details</h4>
+    </div>
+  <div class="panel-body">
+  <form action="." data-parsley-validate="true" name="register_form" method="POST">
+   {% csrf_token %}
+      <div class="row">
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label">Client Type</label>
+              <select class="form-control" id="client_type" name="client_type" data-parsley-required="true" data-parsley-errors-container="#client_error">
+                <option value="">Select Client Type</option>
+                <option value="1">Individual</option>
+                <option value="2">Company</option>
+              </select>
+              <span id="client_error"></span>
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label">KRA PIN Number</label>
+              <input type="text" name="pin_number" id="pin_number" class="form-control" data-parsley-required="true"/>
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="id_number_div">
+            <div class="form-group">
+              <label class="control-label">ID / Passport</label>
+              <input type="text" name="id_number" id="id_number" class="form-control" />
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="etr_number_div">
+            <div class="form-group">
+              <label class="control-label">ETR Number</label>
+              <input type="text" name="etr_number" id="etr_number" class="form-control" />
+            </div>
+          </div><!-- col-sm-6 -->
+        </div><!-- row -->
+        <div class="row">
+          <div class="col-sm-4" id="surname_div">
+            <div class="form-group">
+              <label class="control-label">Surname</label>
+              <input type="text" name="surname" id="surname" class="form-control" />
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="first_name_div">
+            <div class="form-group">
+              <label class="control-label">First Name</label>
+              <input type="text" name="first_name" id="first_name" class="form-control" />
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="middle_name_div">
+            <div class="form-group">
+              <label class="control-label">Middle Name</label>
+              <input type="text" name="middle_name" id="middle_name" class="form-control" />
+            </div>
+          </div>
+          <div class="col-sm-4" id="company_name_div">
+            <div class="form-group">
+              <label class="control-label">Company Name</label>
+              <input type="text" name="company_name" id="company_name" class="form-control" />
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="coreg_number_div">
+            <div class="form-group">
+              <label class="control-label">Company Registration Number</label>
+              <input type="text" name="coreg_number" id="coreg_number" class="form-control" />
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="vat_number_div">
+            <div class="form-group">
+              <label class="control-label">VAT Number</label>
+              <input type="text" name="vat_number" id="vat_number" class="form-control" />
+            </div>
+          </div>
+        </div><!-- row -->
+        <div class="row">
+          <div class="col-sm-4" id="tax_status_div">
+            <div class="form-group">
+              <label class="control-label">Tax status</label>
+              <select class="form-control" id="tax_status" name="tax_status" data-parsley-errors-container="#tax_error">
+                <option value="">Select Tax Status</option>
+                <option value="1">Resident</option>
+                <option value="2">Non Resident</option>
+                <option value="3">Returning Resident</option>
+              </select>
+              <span id="tax_error"></span>
+            </div>
+          </div>
+          <div class="col-sm-4">
+                <div class="form-group">
+                  <label class="control-label">Mobile Number</label>
+                  <input type="number" name="mobile_number" id="mobile_number" class="form-control" />
+              </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label class="control-label">Postal Address</label>
+                  <textarea class="form-control" name="postal_address" id="postal_address" rows="3"></textarea>
+                </div>
+              </div>
+        </div>
+        <div class="row">
+        <div class="form-group">
+            <div class="col-md-8 col-md-offset-4">
+                <button type="submit" class="btn btn-sm btn-primary m-r-5">Register</button>
+                <button type="submit" class="btn btn-sm btn-default">Cancel</button>
+            </div>
+        </div>
+      </div>
+            
+    </div>
+        
+  </div><!-- row -->
+</form>
+
+{% endblock primary %}
+
+{% block lazy_js %}
+
+<script>
+$(document).ready(function(){
+    
+  // Chosen Select
+
+  var client_type = $("#client_type").val();
+
+  handle_clients(client_type);
+
+  $("#client_type").change(function(e) {
+      var client_type = $("#client_type").val();
+      handle_clients(client_type);
+  }); 
+
+});
+
+function handle_clients(client_type){
+       // Company
+      if (client_type == '2')
+      {
+          $('#etr_number_div').show();
+          $('#etr_number').attr('data-parsley-required', 'true');
+            //
+          $('#id_number_div').hide();
+          $('#id_number').attr('data-parsley-required', 'false');
+          $('#surname_div').hide();
+          $('#surname').attr('data-parsley-required', 'false');
+          $('#first_name_div').hide();
+          $('#first_name').attr('data-parsley-required', 'false');
+          $('#middle_name_div').hide();
+          $('#middle_name').attr('data-parsley-required', 'false');
+          //
+          $('#company_name_div').show();
+          $('#company_name').attr('data-parsley-required', 'true');
+          $('#coreg_number_div').show();
+          $('#coreg_number').attr('data-parsley-required', 'true');
+          $('#vat_number_div').show();
+          $('#vat_number').attr('data-parsley-required', 'true');
+          $('#tax_status_div').hide();
+          $('#tax_status').attr('data-parsley-required', 'false');
+          
+      }
+
+      // Default to individual
+      else
+      {
+          $('#etr_number_div').hide();
+          $('#etr_number').attr('data-parsley-required', 'false');
+            //
+          $('#id_number_div').show();
+          $('#id_number').attr('data-parsley-required', 'true');
+          $('#surname_div').show();
+          $('#surname').attr('data-parsley-required', 'true');
+          $('#first_name_div').show();
+          $('#first_name').attr('data-parsley-required', 'true');
+          $('#middle_name_div').show();
+          $('#middle_name').attr('data-parsley-required', 'true');
+          //
+          $('#company_name_div').hide();
+          $('#company_name').attr('data-parsley-required', 'false');
+          $('#coreg_number_div').hide();
+          $('#coreg_number').attr('data-parsley-required', 'false');
+          $('#vat_number_div').hide();
+          $('#vat_number').attr('data-parsley-required', 'false');
+          $('#tax_status_div').show();
+          $('#tax_status').attr('data-parsley-required', 'show');
+      }
+  }
+</script>
+{% endblock lazy_js %}

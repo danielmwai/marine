@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% block page_title %} 
+{{block.super}} Registration
+{% endblock page_title%}
+
+{% load staticfiles %}
+
+{% block style_code %}
+{% endblock style_code %}
+
+
+{% block javascript_code %}
+{% endblock javascript_code %}
+
+{% block primary %}
+
+<!-- begin breadcrumb -->
+      <ol class="breadcrumb pull-right">
+        <li><a href="javascript:;">Home</a></li>
+        <li><a href="javascript:;">Marine Insurance</a></li>
+        <li class="active">Profile</li>
+      </ol>
+      <!-- end breadcrumb -->
+      <!-- begin page-header -->
+      <h1 class="page-header"><i class="fa fa-suitcase"></i> Profile <small> Your details</small></h1>
+      <!-- end page-header -->
+      
+      <div class="panel panel-inverse">
+          <div class="panel-heading">
+              <div class="panel-heading-btn">
+
+                  <a href="#" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
+
+                  <a href="#" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+              </div>
+              <h4 class="panel-title">Client details</h4>
+          </div>
+          <div class="panel-body">
+
+          <!-- begin profile-container -->
+            <div class="profile-container">
+                <!-- begin profile-section -->
+                <div class="profile-section">
+                    <!-- begin profile-left -->
+                    <div class="profile-left">
+                        <!-- begin profile-image -->
+                        <div class="profile-image">
+                            <img src="{% static 'img/user.jpg' %}" />
+                            <i class="fa fa-user hide"></i>
+                        </div>
+                        <!-- end profile-image -->
+                        <!-- begin profile-highlight -->
+                        <div class="profile-highlight">
+                            <h4><i class="fa fa-cog"></i> Only My Contacts</h4>
+                            <div class="checkbox m-b-5 m-t-0">
+                                <label><input type="checkbox" /> Show my timezone</label>
+                            </div>
+                        </div>
+                        <!-- end profile-highlight -->
+                    </div>
+                    <!-- end profile-left -->
+                    <!-- begin profile-right -->
+                    <div class="profile-right">
+                        <!-- begin profile-info -->
+                        <div class="profile-info">
+                            <!-- begin table -->
+                            <div class="table-responsive">
+                                <table class="table table-profile">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>
+                                                {% if person %}
+                                                <h4>{{ person }} <small>Individual</small></h4>
+                                                {% else %}
+                                                <h4>{{ company }} <small>Company</small></h4>
+                                                {% endif %}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="highlight">
+                                            <td colspan="2" class="field"><p></p></td>
+                                        </tr>
+                                        <tr class="divider">
+                                            <td colspan="2"></td>
+                                        </tr>
+                                        {% if person %}
+                                        <tr>
+                                            <td class="field">Surname</td>
+                                            <td> {{ person.surname }} </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="field">First Name</td>
+                                            <td> {{ person.first_name }} </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="field">Middle Name</td>
+                                            <td>{{ person.middle_name }}</td>
+                                        </tr>
+                                        <tr class="divider">
+                                            <td colspan="2"></td>
+                                        </tr>
+                                        <tr class="highlight">
+                                            <td colspan="2" class="field"><p></p></td>
+                                        </tr>
+                                        <tr class="divider">
+                                            <td colspan="2"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="field">KRA PIN</td>
+                                            <td>{{ person.pin_number }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="field"> Mobile Number</td>
+                                            <td>
+                                                <i class="fa fa-mobile fa-lg m-r-5"></i> {{ person.mobile_number }}
+                                            </td>
+                                        </tr>
+                                        {% else %}
+
+                                        <tr>
+                                            <td class="field">Name</td>
+                                            <td> {{ company.company_name }} </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="field">Reg. Number.</td>
+                                            <td> {{ company.reg_number }} </td>
+                                        </tr>
+                                        <tr class="divider">
+                                            <td colspan="2"></td>
+                                        </tr>
+                                        <tr class="highlight">
+                                            <td colspan="2" class="field"><p></p></td>
+                                        </tr>
+                                        <tr class="divider">
+                                            <td colspan="2"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="field">KRA PIN</td>
+                                            <td>{{ company.pin_number }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="field"> Mobile Number</td>
+                                            <td>
+                                                <i class="fa fa-mobile fa-lg m-r-5"></i> {{ company.mobile_number }}
+                                            </td>
+                                        </tr>
+
+                                        {% endif %}
+                                        <tr>
+                                            <td class="field">Email</td>
+                                            <td>{{ request.user.email }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- end table -->
+                        </div>
+                        <!-- end profile-info -->
+                    </div>
+                    <!-- end profile-right -->
+                </div>
+                <!-- end profile-section -->
+                <!-- begin profile-section -->
+                <div class="profile-section">
+                    <!-- begin row -->
+                    <div class="row">
+                        <!-- begin col-4 -->
+                        <div class="col-md-4">
+                            <h4 class="title">Message <small>56 messages</small></h4>
+                            <!-- begin scrollbar -->
+                            <div data-scrollbar="true" data-height="280px" class="bg-silver">
+                                <!-- begin chats -->
+                                
+                                <!-- end chats -->
+                            </div>
+                            <!-- end scrollbar -->
+                        </div>
+                        <!-- end col-4 -->
+                        <!-- begin col-4 -->
+                        <div class="col-md-4">
+                            <h4 class="title">Sales <small>3 sales</small></h4>
+                            <!-- begin scrollbar -->
+                            <div data-scrollbar="true" data-height="280px" class="bg-silver">
+                                <!-- begin table -->
+                                
+                                <!-- end table -->
+                            </div>
+                            <!-- end scrollbar -->
+                        </div>
+                        <!-- end col-4 -->
+                        <!-- begin col-4 -->
+                        <div class="col-md-4">
+                            <h4 class="title">Task <small>24 pending</small></h4>
+                            <!-- begin scrollbar -->
+                            <div data-scrollbar="true" data-height="280px" class="bg-silver">
+                                <!-- begin todolist -->
+                                
+                                <!-- end todolist -->
+                            </div>
+                            <!-- end scrollbar -->
+                        </div>
+                        <!-- end col-4 -->
+                    </div>
+                    <!-- end row -->
+                </div>
+                <!-- end profile-section -->
+            </div>
+      <!-- end profile-container -->
+          
+        
+    </div>
+    <!-- end panel-body -->
+
+</div>
+<!-- end panel -->
+
+{% endblock primary %}
+
+{% block lazy_js %}
+
+
+{% endblock lazy_js %}

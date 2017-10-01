@@ -1,0 +1,96 @@
+{% extends 'base_main.html' %}
+{% load staticfiles %}
+
+{% block page_title %} 
+{{block.super}} Error page
+{% endblock page_title %}
+
+{% block primary %}
+<!-- BEGIN #my-account -->
+<div id="about-us-cover" class="section-container">
+    <!-- BEGIN container -->
+    <div class="container">
+        <!-- BEGIN breadcrumb -->
+        <ul class="breadcrumb m-b-10 f-s-12">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Marine Insurance</a></li>
+            <li class="active">Error Page</li>
+        </ul>
+        <!-- END breadcrumb -->
+        <!-- BEGIN account-container -->
+        <div class="account-container">
+            <!-- BEGIN account-sidebar -->
+            <div class="account-sidebar">
+                {% if SITE_ID  == 1 %}
+                    <div class="account-sidebar-cover">
+                        <img src="{% static 'img/my-account-cover.jpg' %}" alt="" />
+                    </div>
+                    <div class="account-sidebar-content">
+                        <p></p>
+                        <h4><center>Visionary Connectivity</center></h4>
+                    </div>
+                                  
+                {% else %}
+                  {% with SITE_IDT|add:'/img/ship.jpg' as image_static %}                                     
+                  <div class="account-sidebar-cover">
+                      <img src="{% static image_static %}" alt="" />
+                  </div>
+                  <div class="account-sidebar-content">
+                      <p></p>
+                  </div>
+                  {% endwith %}
+                {% endif %}
+                <div class="account-sidebar-content">
+                </div>
+            </div>
+            <!-- END account-sidebar -->
+            <!-- BEGIN account-body -->
+            <div class="account-body">
+                <!-- BEGIN row -->
+                <div class="row">
+                    <div class="row">
+                    {% if messages %}
+                      {% for message in messages %}
+                        {% if 'error' in message.tags %}
+                      <div id="messages" class="alert alert-danger fade in m-b-15">
+                      <span class="close" data-dismiss="alert">×</span>
+                      <i class="fa fa-info fa-2x pull-left"></i>
+                        {% else %}
+                      <div id="messages" class="alert alert-success fade in">
+                      <span class="close" data-dismiss="alert">×</span>
+                      <i class="fa fa-check fa-2x pull-left"></i>
+                        {% endif %}    
+                      <p>{{ message }}</p>
+                        </div>
+                     {% endfor %}
+                  {% endif %}
+                  {% if form.errors %}
+                      <div id="messages" class="alert alert-danger fade in m-b-15">
+                      <span class="close" data-dismiss="alert">×</span>
+                      <i class="fa fa-info fa-2x pull-left"></i>
+                      {{ form.non_field_errors }}
+                      </div>
+                  {% endif %}
+                </div>
+                    <!-- BEGIN col-6 -->
+                    <div class="col-md-12">
+                        <h4><i class="fa fa-lock text-muted"></i> Server error details</h4>
+
+                        <ul class="nav nav-list">
+                            <li><a href="#">Did you mistype the url?</a></li>
+                        </ul>
+                        
+                        <p>{{ reason }}</p>
+                    </div>
+                    <!-- END col-6 -->
+                </div>
+                <!-- END row -->
+            </div>
+            <!-- END account-body -->
+        </div>
+        <!-- END account-container -->
+    </div>
+    <!-- END container -->
+</div>
+<!-- END #about-us-cover -->
+{% endblock primary %}

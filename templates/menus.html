@@ -1,0 +1,81 @@
+{% load staticfiles %}
+{% load app_filters %}
+
+<ul class="nav">
+  <li class="nav-header">Navigation</li>
+  <li class="has-sub active">
+    <a href="#">
+        <b class="caret pull-right"></b>
+        <i class="fa fa-laptop"></i>
+        <span>Dashboard</span>
+      </a>
+    <ul class="sub-menu">
+        <li><a href="{% url 'dashboard' %}">My Dashboard</a></li>
+    </ul>
+  </li>
+  <li class="has-sub ">
+    <a href="#">
+        <b class="caret pull-right"></b>
+        <i class="fa fa-file-o"></i>
+        <span>Forms</span> 
+    </a>
+    <ul class="sub-menu">
+      <li><a href="{% url 'registration' %}">Registration</a></li>
+      <li><a href="{% url 'cargo' %}">Cargo details</a></li>
+      <li><a href="#">Custom Bonds</a></li>
+    </ul>
+  </li>
+  <li class="has-sub ">
+    <a href="#">
+        <b class="caret pull-right"></b>
+        <i class="fa fa-file-o"></i>
+        <span>Reports</span> 
+    </a>
+    <ul class="sub-menu">
+      {% if request.user|has_group:"Insurance" %} 
+      <li><a href="{% url 'insurance' %}">Insurance Companies</a></li>
+      {% elif request.user|has_group:"Broker" %}
+      <li><a href="{% url 'agency' %}">Brokers / Agents</a></li>
+      {% elif request.user|has_group:"Regulator" %}
+      <li><a href="{% url 'regulator' %}">IRA / AKI</a></li>
+      <li><a href="{% url 'regulator' %}">AIBK</a></li>
+      {% elif request.user|has_group:"GAgency" %}
+      <li><a href="{% url 'krakebs' %}">KRA / KEBS</a></li>
+      {% else %}
+      {% if request.user|has_group:"Admin" %}
+      <li><a href="#">Coordinator</a></li>
+      <li><a href="#">System</a></li>
+      {% else %}
+      <li><a href="#">My Transactions</a></li>
+      {% endif %}
+      {% endif %}
+
+    </ul>
+  </li>
+  <li class="has-sub ">
+    <a href="#">
+        <b class="caret pull-right"></b>
+        <i class="fa fa-file-o"></i>
+        <span>Maintainance</span> 
+    </a>
+    <ul class="sub-menu">
+      {% if request.user|has_group:"Insurance" %} 
+      <li><a href="{% url 'schedule' %}">Schedules</a></li>
+      {% if request.user|has_group:"Admin" %}
+      <li><a href="{% url 're_setup' %}">Re-insurance set up</a></li>
+      <li><a href="{% url 'regs' %}">Registrations</a></li>
+      {% endif %}
+      {% endif %}
+    </ul>
+  </li>
+  
+  <!-- begin sidebar minify button -->
+  <li>
+    <a href="#" class="sidebar-minify-btn" data-click="sidebar-minify">
+    <i class="fa fa-angle-double-left"></i></a>
+  </li>
+  <!-- end sidebar minify button -->
+</ul>
+{% if SITE_ID  == 1 %}
+<img src="{% static 'img/kenswitch.jpg' %}" width="100%">
+{% endif %}

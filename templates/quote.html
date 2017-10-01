@@ -1,0 +1,309 @@
+{% extends 'base_main.html' %}
+{% load staticfiles %}
+
+{% block page_title %} 
+{{block.super}} Get a quotation
+{% endblock page_title %}
+
+{% block style_code %}
+<style type="text/css">
+    .advert {
+        padding: 5px;
+        border: solid 1px #EFEFEF;
+    }
+    a:hover img.advert {
+        border: solid 1px #CCC;
+        -moz-box-shadow: 1px 1px 5px #999;
+        -webkit-box-shadow: 1px 1px 5px #999;
+            box-shadow: 1px 1px 5px #999;
+    }
+</style>
+{% endblock style_code %}
+
+
+{% block primary %}
+<!-- BEGIN #my-account -->
+<div id="about-us-cover" class="section-container">
+    <!-- BEGIN container -->
+    <div class="container">
+        <!-- BEGIN breadcrumb -->
+        <ul class="breadcrumb m-b-10 f-s-12">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Marine Insurance</a></li>
+            <li class="active">Quotation</li>
+        </ul>
+        <!-- END breadcrumb -->
+        <!-- BEGIN account-container -->
+        <div class="account-container">
+            <!-- BEGIN account-sidebar -->
+            <form class="form-horizontal" action="." method="POST" data-parsley-validate="true" id="quote_form">
+            {{ form.currency_id }}
+            {{ form.currency_value }}
+            <input type="hidden" name="insurance_co" id="insurance_co" value="{{ CO_ID }}">
+            <div class="account-sidebar" style="border-right: 1px solid #ddd;">
+                <div class="account-sidebar-content row" style="color:#000; margin:10px;">
+                    <div class="row">
+                        <div class="form-group">
+                          <label>Category</label>
+                            {{ form.goods_category }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                          <label>Shipping Mode</label>
+                            {{ form.shipping_mode }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                          <label>Package Type</label>
+                            {{ form.package_type }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                          <label>Sum Insured</label>
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-primary"><span id="cid">KES</span></button>
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#" class="curr" id="KES">KES</a></li>
+                                        <li><a href="#" class="curr" id="USD">USD</a></li>
+                                    </ul>
+                                </div>
+                                {{ form.sum_assured }}
+                                <span class="input-group-addon" id="basic-addon2">@<span id="cval">1.00</span></span>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                          <label>Email</label>
+                            {{ form.email }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                          <label>Telephone</label>
+                            {{ form.mobile_number }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-12 col-md-offset-2">
+                                <button type="submit" class="btn btn-sm btn-primary m-r-5"> <i class="fa fa-shopping-cart" aria-hidden="true"></i> Get a Quote</button>
+                                <a href="{% url 'home' %}">
+                                <button type="button" class="btn btn-sm btn-default">Cancel</button></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END account-sidebar -->
+            <!-- BEGIN account-body -->
+            <div class="account-body">
+                <div class="row">
+                    {% if messages %}
+                      {% for message in messages %}
+                        {% if 'error' in message.tags %}
+                      <div id="messages" class="alert alert-danger fade in m-b-15">
+                      <span class="close" data-dismiss="alert">×</span>
+                      <i class="fa fa-info fa-2x pull-left"></i>
+                        {% else %}
+                      <div id="messages" class="alert alert-success fade in">
+                      <span class="close" data-dismiss="alert">×</span>
+                      <i class="fa fa-check fa-2x pull-left"></i>
+                        {% endif %}    
+                      <p>{{ message }}</p>
+                        </div>
+                     {% endfor %}
+                  {% endif %}
+                </div>
+                <!-- BEGIN row -->
+                <div class="row">
+                {% csrf_token %}
+                    <fieldset>
+                        <legend>My Quote</legend>
+                        <div class="table-responsive" style="min-height: 480px;">
+                            {% if rate %}
+                                <table class="table table-cart">
+                                    <thead>
+                                        <tr>
+                                            <th>Product Name</th>
+                                            <th class="text-center">Total Sum Insured</th>
+                                            <th class="text-center">Rate</th>
+                                            <th class="text-center" width="18%">Premium (Ksh)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="cart-product">
+                                                <div class="product-info">
+                                                    <div class="title">{{ amount.goods }}</div>
+                                                    <div class="desc"></div>
+                                                </div>
+                                            </td>
+                                            <td class="cart-price text-center">
+                                                {{ amount.ivalue|safe }}
+                                            </td>
+                                            <td class="cart-qty text-center">
+                                                {{ rate }} %
+                                            </td>
+                                            <td class="cart-total text-right">
+                                                {{ amount.gross }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="cart-summary" colspan="4">
+                                                <div class="summary-container">
+                                                    <div class="summary-row">
+                                                        <div class="field">Transhipment</div>
+                                                        <div class="value">{{ amount.trans_ship }}</div>
+                                                    </div>
+                                                    <div class="summary-row">
+                                                        <div class="field">Concealed Losses/Storage Extension</div>
+                                                        <div class="value">{{ amount.losses }}</div>
+                                                    </div>
+                                                    <div class="summary-row">
+                                                        <div class="field">Overage Premium</div>
+                                                        <div class="value">{{ amount.over_age }}</div>
+                                                    </div>
+                                                    <div class="summary-row">
+                                                        <div class="field">Stamp Duty</div>
+                                                        <div class="value">{{ amount.stamp_duty }}</div>
+                                                    </div>
+                                                    <div class="summary-row total">
+                                                        <div class="field">Total Premium</div>
+                                                        <div class="value">{{ amount.net }}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="alert alert-info m-b-0" id="ainfo">
+                                <h4 class="block">Note</h4>
+                                <p>This is an estimated premium and to get the cover you will have to provide more details.
+                                </p>
+                            </div>
+                            <br/>
+
+                                <div class="col-md-8 col-md-offset-4">
+                                <a href="{% url 'cargo' %}">
+                                <button type="button" class="btn btn-sm btn-primary m-r-5"> <i class="fa fa-shopping-cart" aria-hidden="true"></i> Order Now</button></a>
+                                <button type="button" class="btn btn-sm btn-primary m-r-5" id="email_quote"> <i class="fa fa-envelope" aria-hidden="true"></i> Email Quote</button>
+                                <a href="{% url 'home' %}">
+                                <button type="button" class="btn btn-sm btn-default">Cancel</button></a>
+                            </div>                            
+                        {% else %}
+                            <div class="alert alert-info m-b-0">
+                                <h4 class="block">Notice</h4>
+                                <p>{{ info }}</p>
+                            </div>
+                            {% if advert %}
+
+                            <img class="advert" src="{% static advert %}" alt="" width="100%" />
+                            
+                            {% endif %}
+                        {% endif %}
+                        </div>
+
+                    </fieldset>
+                </form>
+
+                </div>
+                <!-- END row -->
+            </div>
+            <!-- END account-body -->
+        </div>
+        <!-- END account-container -->
+    </div>
+    <!-- END container -->
+</div>
+<!-- END #about-us-cover -->
+{% endblock primary %}
+{% block lazy_js %}
+
+<script src="{% static 'plugins/autoNumeric/dist/autoNumeric.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+      $('#sum_assured').autoNumeric('init');
+
+      var crate = $('#currency_value').val();
+      var cid = $('#currency_id').val();
+      $('#cid').html(cid);
+      $('#cval').html(crate);
+
+      $('a.curr').click(function() { 
+          var id = $(this).attr('id');
+          $('#cid').html(id);
+          var rate;
+          if (id == 'USD'){
+             rate = 102.45;
+          }else{
+             rate = 1.000; 
+          }
+          $('#cval').html(rate);
+          $('#currency_value').val(rate);
+          $('#currency_id').val(id);
+          return false; 
+      });
+
+      var smode = $("#shipping_mode").val();
+      handle_package(smode);
+
+      $('#shipping_mode').change(function(){
+          var smode = $("#shipping_mode").val();
+          handle_package(smode);
+      });
+
+      $('#goods_section').attr("data-parsley-required", "true");
+      $('#sum_assured').attr("data-parsley-required", "true");
+
+      $('#goods_category').html('{{ categories|safe }}');
+      $('#goods_category').val('{{ category }}');
+
+      function handle_package(smode) {
+        if (smode == '1'){
+            $('#package_type').attr("data-parsley-required", "true");
+            $('#package_type').prop('disabled', false);
+        }else{
+            $('#package_type').attr("data-parsley-required", "false");
+            $('#package_type').val('');
+            $('#package_type').prop('disabled', true);
+        }
+      }
+
+       $( "#email_quote" ).click(function() {
+           $('#email').attr("data-parsley-required", "true");
+           $('#quote_form').parsley().validate();
+
+           if ($('#quote_form').parsley().isValid()){
+                var dt = $('.table-cart').html();
+                $.ajax({
+                   type: "POST",
+                   url: "{% url 'quote' %}",
+                   dataType: "json",
+                   data: $("#quote_form").serialize() + "&d=" + dt,
+                   success: function(data)
+                   {
+                       $('#ainfo').html('Quote sent to your email.');
+                   },
+                    error: function(){
+                       $('#ainfo').html('Error occured when sending quote.');
+                    }
+                 });
+
+            }else{
+                $('#ainfo').html('Please provide missing details.');
+            }
+
+        });
+    });
+</script>
+
+{% endblock lazy_js %}

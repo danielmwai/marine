@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block page_title %} 
+{{block.super}} Registrations
+{% endblock page_title%}
+
+{% load staticfiles %}
+
+{% block style_code %}
+<style type="text/css">
+  table {
+   border: 2px solid black;
+   border-collapse: collapse;
+}
+ tr.border_bottom td {
+  border-bottom:1pt solid black;
+}
+</style>
+{% endblock style_code %}
+
+
+{% block javascript_code %}
+{% endblock javascript_code %}
+
+{% block primary %}
+
+<!-- begin breadcrumb -->
+      <ol class="breadcrumb pull-right">
+        <li><a href="javascript:;">Home</a></li>
+        <li><a href="javascript:;">Marine Insurance</a></li>
+        <li class="active">Registrations</li>
+      </ol>
+      <!-- end breadcrumb -->
+      <!-- begin page-header -->
+      <h1 class="page-header"><i class="fa fa-suitcase"></i> Registrations <small> Pending registrations</small></h1>
+      <!-- end page-header -->
+      {% if messages %}
+          {% for message in messages %}
+          {% if 'error' in message.tags %}
+              <div id="messages" class="alert alert-danger fade in">
+              <span class="close" data-dismiss="alert">×</span>
+              <i class="fa fa-info fa-2x pull-left"></i>
+          {% else %}
+              <div id="messages" class="alert alert-success fade in">
+              <span class="close" data-dismiss="alert">×</span>
+              <i class="fa fa-check fa-2x pull-left"></i>
+          {% endif %}    
+              <p>{{ message }}</p>
+          </div>
+         {% endfor %}
+      {% endif %}
+      
+      <div class="panel panel-inverse">
+          <div class="panel-heading">
+              <div class="panel-heading-btn">
+
+                  <a href="#" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
+
+                  <a href="#" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+              </div>
+              <h4 class="panel-title">Registrations</h4>
+          </div>
+          <div class="panel-body">
+
+          <p></p>
+          <a href="{% url 'new_user' %}"><button type="button" class="btn btn-sm btn-primary m-r-5"><i class="fa fa-pencil"></i>&nbsp; New User</button></a>
+          <hr>
+
+          <form action="." data-parsley-validate="true" name="register_form" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="account_type" id="account_type" value="{{ account }}">
+      <input type="hidden" name="account_id" id="account_id" value="{{ account_id }}">
+      {% if account == 1 %}
+      <div class="row">
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label">User Level</label>
+              {{ form.user_level }}
+              <span id="client_error"></span>
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label">Staff Number</label>
+              {{ form.staff_number }}
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="id_number_div">
+            <div class="form-group">
+              <label class="control-label">ID / Passport</label>
+              {{ form.id_number }}
+            </div>
+          </div><!-- col-sm-6 -->
+        </div><!-- row -->
+        <div class="row">
+          <div class="col-sm-4" id="surname_div">
+            <div class="form-group">
+              <label class="control-label">Surname</label>
+              {{ form.surname }}
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="first_name_div">
+            <div class="form-group">
+              <label class="control-label">First Name</label>
+              {{ form.first_name }}
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="middle_name_div">
+            <div class="form-group">
+              <label class="control-label">Middle Name</label>
+              {{ form.middle_name }}
+            </div>
+          </div>
+        </div><!-- row -->
+        <div class="row">
+        <div class="col-sm-4">
+                <div class="form-group">
+                  <label class="control-label">Email</label>
+                  {{ form.email }}
+              </div>
+              </div>
+          <div class="col-sm-4">
+                <div class="form-group">
+                  <label class="control-label">Mobile Number</label>
+                  {{ form.mobile_number }}
+              </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label class="control-label">Postal Address</label>
+                  {{ form.postal_address }}
+                </div>
+              </div>
+        </div>
+        {% else %}
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label">User Level</label>
+              {{ form.user_level }}
+              <span id="client_error"></span>
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label">KRA PIN</label>
+              {{ form.kra_pin }}
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="id_number_div">
+            <div class="form-group">
+              <label class="control-label">ETR Number</label>
+              {{ form.etr_number }}
+            </div>
+          </div><!-- col-sm-6 -->
+        </div><!-- row -->
+        <div class="row">
+          <div class="col-sm-4" id="surname_div">
+            <div class="form-group">
+              <label class="control-label">Company Name</label>
+              {{ form.company_name }}
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="first_name_div">
+            <div class="form-group">
+              <label class="control-label">Company Registration Number</label>
+              {{ form.coreg_number }}
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="middle_name_div">
+            <div class="form-group">
+              <label class="control-label">Email</label>
+              {{ form.email }}
+            </div>
+          </div>
+        </div><!-- row -->
+        <div class="row">
+          <div class="col-sm-4">
+                <div class="form-group">
+                  <label class="control-label">Mobile Number</label>
+                  {{ form.mobile_number }}
+              </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label class="control-label">Postal Address</label>
+                  {{ form.postal_address }}
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label class="control-label">Physical Address</label>
+                  {{ form.phy_address }}
+                </div>
+              </div>
+        </div>
+        {% endif %}
+        <div class="row">
+        <div class="form-group">
+            <div class="col-md-8 col-md-offset-4">
+                <button type="submit" class="btn btn-sm btn-primary m-r-5">Update User</button>
+                <button type="submit" class="btn btn-sm btn-default">Cancel</button>
+            </div>
+        </div>
+      </div>
+            
+    </div>
+        
+  </div><!-- row -->
+</form>
+
+    </div>
+    <!-- end panel-body -->
+
+</div>
+<!-- end panel -->
+
+{% endblock primary %}
+
+{% block lazy_js %}
+
+
+{% endblock lazy_js %}

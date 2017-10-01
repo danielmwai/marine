@@ -1,0 +1,385 @@
+{% extends 'base_main.html' %}
+{% load staticfiles %}
+{% block primary %}
+<!-- BEGIN #my-account -->
+<div id="about-us-cover" class="section-container">
+    <!-- BEGIN container -->
+    <div class="container">
+        <!-- BEGIN breadcrumb -->
+        <ul class="breadcrumb m-b-10 f-s-12">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Marine Insurance</a></li>
+            <li class="active">My Account</li>
+        </ul>
+        <!-- END breadcrumb -->
+        <!-- BEGIN account-container -->
+        <div class="account-container">
+            <!-- BEGIN account-sidebar -->
+            <div class="account-sidebar">
+                {% if SITE_ID  == 1 %}
+                    <div class="account-sidebar-cover">
+                        <img src="{% static 'img/my-account-cover.jpg' %}" alt="" />
+                    </div>
+                    <div class="account-sidebar-content">
+                        <p></p>
+                        <h4><center>Visionary Connectivity</center></h4>
+                    </div>
+                                  
+                {% else %}
+                  {% with SITE_IDT|add:'/img/ship.jpg' as image_static %}                                     
+                  <div class="account-sidebar-cover">
+                      <img src="{% static image_static %}" alt="" />
+                  </div>
+                  <div class="account-sidebar-content">
+                      <p></p>
+                  </div>
+                  {% endwith %}
+                {% endif %}
+            </div>
+            <!-- END account-sidebar -->
+            <!-- BEGIN account-body -->
+            <div class="account-body">
+                <div class="row">
+                    {% if messages %}
+                      {% for message in messages %}
+                        {% if 'error' in message.tags %}
+                      <div id="messages" class="alert alert-danger fade in m-b-15">
+                      <span class="close" data-dismiss="alert">×</span>
+                      <i class="fa fa-info fa-2x pull-left"></i>
+                        {% else %}
+                      <div id="messages" class="alert alert-success fade in">
+                      <span class="close" data-dismiss="alert">×</span>
+                      <i class="fa fa-check fa-2x pull-left"></i>
+                        {% endif %}    
+                      <p>{{ message }}</p>
+                        </div>
+                     {% endfor %}
+                  {% endif %}
+                  {% if form.errors %}
+                  <div id="messages" class="alert alert-danger fade in m-b-15">
+                  <span class="close" data-dismiss="alert">×</span>
+                  <i class="fa fa-info fa-2x pull-left"></i>
+                   {{ form.non_field_errors }}
+                   {{ form.errors }}
+                  </div>
+              {% endif %}
+                </div>
+                <!-- BEGIN row -->
+                <div class="row">
+                    <!-- BEGIN col-6 -->
+                    <form action="." method="POST" class="margin-bottom-0" data-parsley-validate="true">
+                        {% csrf_token %}
+                        <input type="hidden" name="site_id" id="site_id" value="{{ SITE_ID }}">
+                        <div class="col-md-6">
+                            <label class="control-label">Type of Individual</label>
+                            <div class="row m-b-15">
+                                {{ form.client_type }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                        <label class="control-label">KRA PIN Number</label>
+                        <div class="row m-b-15">
+                                {{ form.kra_pin }}
+                            </div>
+                        </div>
+                        <div class="row"></div>
+                        {% if cid == 2 %}
+                        <div class="col-md-6">
+                        <label class="control-label">Broker</label>
+                        <div class="row m-b-15">
+                                {{ form.broker_id }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                        <label>Broker ID</label>
+                          <input type="text" class="form-control" name="broker" id="broker" readonly="readonly">
+                        </div>
+                        <div class="row"></div>
+                        {% elif cid == 3 %}
+                        <div class="col-md-6">
+                        <label class="control-label">Agent</label>
+                        <div class="row m-b-15">
+                                <input type="text" name="agent_id" id="agent_id" class="form-control" placeholder="Agent" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                        <label>IRA Number</label>
+                          <input type="text" class="form-control" name="ira_number" id="ira_number" readonly="readonly">
+                        </div>
+                        <div class="row"></div>
+                        {% elif cid == 4 %}
+                        <div class="col-md-6">
+                        <label class="control-label">Bank</label>
+                        <div class="row m-b-15">
+                              {{ form.bank_id }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                        <label>Bank Code</label>
+                          <input type="text" class="form-control" name="bank" id="bank" readonly="readonly">
+                        </div>
+                        <div class="row"></div>
+                        {% elif cid == 5 %}
+                        <div class="col-md-6">
+                        <label class="control-label">Insurance Company</label>
+                        <div class="row m-b-15">
+                                {{ form.insurance_id }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                        <label>Company ID</label>
+                          <input type="text" class="form-control" name="insurance" id="insurance" readonly="readonly">
+                        </div>
+                        <div class="row"></div>
+                        {% endif %}
+                        <div class="col-md-6" id="surname_div">
+                        <label class="control-label">Surname</label>
+                        <div class="row m-b-15">
+                             {{ form.surname }}
+                        </div>
+                        </div>
+                        <div class="col-md-6" id="first_name_div">
+                        <label class="control-label">First Name</label>
+                        <div class="row m-b-15">
+                            {{ form.first_name }}
+                        </div>
+                        </div>
+                        <div class="col-md-6" id="middle_name_div">
+                        <label class="control-label">Middle Name</label>
+                        <div class="row m-b-15">
+                                {{ form.middle_name }}
+                        </div>
+                        </div>
+                        <div class="col-md-6" id="company_name_div">
+                        <label class="control-label">Company Name</label>
+                        <div class="row m-b-15">
+                            {{ form.company_name }}
+                        </div>
+                        </div>
+                        <div class="col-md-6" id="coreg_number_div">
+                        <label class="control-label">Company Registration Number</label>
+                        <div class="row m-b-15">
+                            {{ form.coreg_number }}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6" id="etr_number_div">
+                        <label class="control-label">ETR Number</label>
+                        <div class="row m-b-15">
+                            {{ form.etr_number }}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6" id="id_number_div">
+                        <label class="control-label">National ID / Passport Number</label>
+                        <div class="row m-b-15">
+                                {{ form.id_number }}
+                        </div>
+                        </div>
+                        <div class="col-md-6" id="tax_status_div">
+                        <label class="control-label">Tax status</label>
+                        <div class="row m-b-15">
+                            {{ form.tax_status }}
+                        </div>
+                        </div>
+                        <div class="col-md-6">
+                        <label class="control-label">Mobile Telephone Number</label>
+                        <div class="row m-b-15">
+                                {{ form.mobile_number }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                        <label class="control-label">Postal Address</label>
+                        <div class="row m-b-15">
+                                {{ form.postal_address }}
+                            </div>
+                        </div>
+                        <div class="col-md-6" id="phy_address_div">
+                        <label class="control-label">Physical Address</label>
+                        <div class="row m-b-15">
+                                {{ form.phy_address }}
+                            </div>
+                        </div>
+                        <div class="row"></div>
+                         <div class="col-md-6">
+                        <label class="control-label">Email</label>
+                        <div class="row m-b-15">
+                                {{ form.email }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                        <label class="control-label">Captcha</label>
+                        <div class="row m-b-15">
+                                {{ form.captcha }}
+                            </div>
+                        </div>
+                        <div class="row"></div>
+                        <div class="col-md-6">
+                        <label class="control-label">Password</label>
+                        <div class="row m-b-15">
+                                {{ form.password1 }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                        <label class="control-label">Re-enter Password</label>
+                        <div class="row m-b-15">
+                                {{ form.password2 }}
+                            </div>
+                        </div>
+                        <div class="row"></div>
+                        <div class="checkbox m-b-30">
+                            <label>
+                                <input type="checkbox" name="terms" data-parsley-required="true" id="terms" parsley-error-container="#termserror" /> By clicking Sign Up, you agree to our <a href="#">Terms</a> and that you have read our <a href="#">Data Policy</a>, including our <a href="#">Cookie Use</a>.
+                                {% if cid != '1' %}
+                                Your details will have to be verified first by the Company / Bank / Agent or Broker.
+                                {% endif %}
+                            </label>
+                            <span id="termserror"></span>
+                        </div>
+                        <div class="register-buttons">
+                            <button type="submit" class="btn btn-primary btn-lg">Sign Up</button>
+                        </div>
+                        <div class="m-t-20 m-b-10 p-b-10">
+                            Already a member? Click <a href="{% url 'login' %}">here</a> to login.
+                        </div>
+                    </form>
+                </div>
+                <!-- END row -->
+            </div>
+            <!-- END account-body -->
+        </div>
+        <!-- END account-container -->
+    </div>
+    <!-- END container -->
+</div>
+<!-- END #about-us-cover -->
+{% endblock primary %}
+{% block lazy_js %}
+<script>
+    $(document).ready(function() {
+      App.init();
+    
+      // Chosen Select
+
+      var client_type = $("#client_type").val();
+
+      handle_clients(client_type);
+      {% if cid == 2 %}
+      $("#broker_id").val('');
+      {% elif cid == 3 %}
+      $("#agent_id").val('');
+      {% elif cid == 4 %}
+      $("#bank_id").val('');
+      {% elif cid == 5 %}
+      $("#insurance_id").val('');
+      {% endif %}
+
+      $("#client_type").change(function(e) {
+          var client_type = $("#client_type").val();
+          handle_clients(client_type);
+      });
+
+      $("#broker_id").change(function(e) {
+          var broker_id = $("#broker_id").val();
+          $("#broker").val(broker_id);
+          $("#company_id").val(broker_id);
+      });
+
+      $("#bank_id").change(function(e) {
+          var bank_id = $("#bank_id").val();
+          $("#bank").val(bank_id);
+          $("#company_id").val(bank_id);
+      });
+
+      $("#insurance_id").change(function(e) {
+          var ins_id = $("#insurance_id").val();
+          $("#insurance").val(ins_id);
+          $("#company_id").val(ins_id);
+      });
+
+      //IRC query
+    $( "#agent_id" ).autocomplete({
+        source: function( request, response ) {
+        $.ajax({
+          url: "/forms/public/",
+          dataType: "json",
+          data: {q: request.term, id: 4},
+          success: function( data ) {
+            response( data );
+          }
+        });
+      },
+      minLength: 5,
+      select: function( event, ui ) {
+         $('#ira_number').val(ui.item.ira_number);
+         $('#company_id').val(ui.item.id);
+      },
+      open: function() {
+        $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+      },
+      close: function() {
+        $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+      }
+    });
+
+    });
+
+function handle_clients(client_type){
+       // Company
+      if (client_type == '2')
+      {
+          $('#etr_number_div').show();
+          $('#etr_number').attr('data-parsley-required', 'true');
+            //
+          $('#id_number_div').hide();
+          $('#id_number').attr('data-parsley-required', 'false');
+          $('#surname_div').hide();
+          $('#surname').attr('data-parsley-required', 'false');
+          $('#first_name_div').hide();
+          $('#first_name').attr('data-parsley-required', 'false');
+          $('#middle_name_div').hide();
+          $('#middle_name').attr('data-parsley-required', 'false');
+          //
+          $('#company_name_div').show();
+          $('#company_name').attr('data-parsley-required', 'true');
+          $('#coreg_number_div').show();
+          $('#coreg_number').attr('data-parsley-required', 'true');
+          $('#vat_number_div').show();
+          $('#vat_number').attr('data-parsley-required', 'true');
+          $('#phy_address_div').show();
+          $('#phy_address').attr('data-parsley-required', 'true');
+
+          $('#tax_status_div').hide();
+          $('#tax_status').attr('data-parsley-required', 'false');
+      }
+
+      // Default to individual
+      else
+      {
+          $('#etr_number_div').hide();
+          $('#etr_number').attr('data-parsley-required', 'false');
+            //
+          $('#id_number_div').show();
+          $('#id_number').attr('data-parsley-required', 'true');
+          $('#surname_div').show();
+          $('#surname').attr('data-parsley-required', 'true');
+          $('#first_name_div').show();
+          $('#first_name').attr('data-parsley-required', 'true');
+          $('#middle_name_div').show();
+          $('#middle_name').attr('data-parsley-required', 'true');
+          //
+          $('#company_name_div').hide();
+          $('#company_name').attr('data-parsley-required', 'false');
+          $('#coreg_number_div').hide();
+          $('#coreg_number').attr('data-parsley-required', 'false');
+          $('#vat_number_div').hide();
+          $('#vat_number').attr('data-parsley-required', 'false');
+          $('#phy_address_div').hide();
+          $('#phy_address').attr('data-parsley-required', 'false');
+
+          $('#tax_status_div').show();
+          $('#tax_status').attr('data-parsley-required', 'true');
+      }
+  }
+</script>
+{% endblock lazy_js %}

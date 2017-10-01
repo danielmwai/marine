@@ -1,0 +1,146 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+<head>
+  <meta charset="utf-8" />
+  <title>Marine Insurance | {% block page_title %}{% endblock %}</title>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+  <meta content="" name="description" />
+  <meta content="" name="author" />
+  
+  <!-- ================== BEGIN BASE CSS STYLE ================== -->
+  <link href="{% static 'main/plugins/jquery-ui/themes/base/minified/jquery-ui.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'main/plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'main/plugins/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" />
+    {% if SITE_ID  == 1 %}
+      <link href="{% static 'main/css/style.min.css' %}" rel="stylesheet" />
+    {% else %}
+        {% with SITE_IDT|add:'/main/css/style.css' as style_static %}  
+             <link href="{% static style_static %}" rel="stylesheet" />
+        {% endwith %}
+    {% endif %}
+  <link href="{% static 'main/css/style-responsive.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'main/css/theme/default.css' %}" id="theme" rel="stylesheet" />
+  <link href="{% static 'main/css/animate.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'plugins/parsley/src/parsley.css' %}" rel="stylesheet" />
+  <!-- ================== END BASE CSS STYLE ================== -->
+  
+  <!-- ================== BEGIN BASE JS ================== -->
+  <script src="{% static 'plugins/pace/pace.min.js' %}"></script>
+  <!-- ================== END BASE JS ================== -->
+</head>
+<body class="bg-silver">
+    <!-- BEGIN #page-container -->
+    <div id="page-container" class="fade">
+        <!-- BEGIN #top-nav -->
+        <div id="top-nav" class="top-nav">
+            <!-- BEGIN container -->
+            <div class="container">
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown dropdown-hover">
+                            <a href="#" data-toggle="dropdown"><img src="{% static 'img/english.png' %}" class="flag-img" alt="" /> English <i class="fa fa-angle-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#"><img src="{% static 'img/english.png' %}" class="flag-img" alt="" /> English</a></li>
+                                <li><a href="#"><img src="{% static 'img/french.png' %}" class="flag-img" alt="" /> French</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#">Customer Care</a></li>
+                        <li><a href="#">Shipment Tracker</a></li>
+                        {% if SITE_ID  == 1 %}
+                        <li><a href="{% url 'cverify' %}">Certificate Checker</a></li>
+                        {% endif %}
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#">Newsletter</a></li>
+                        <li><a href="#"><i class="fa fa-facebook f-s-14"></i></a></li>
+                        <li><a href="#"><i class="fa fa-twitter f-s-14"></i></a></li>
+                        <li><a href="#"><i class="fa fa-instagram f-s-14"></i></a></li>
+                        <li><a href="#"><i class="fa fa-dribbble f-s-14"></i></a></li>
+                        <li><a href="#"><i class="fa fa-google-plus f-s-14"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- END container -->
+        </div>
+        <!-- END #top-nav -->
+    
+        <!-- BEGIN #header -->
+        <div id="header" class="header">
+            <!-- BEGIN container -->
+            <div class="container">
+                {% with SITE_IDT|add:'/header.html' as header_static %}  
+                    {% include header_static %}
+                {% endwith %}
+            </div>
+            <!-- END container -->
+        </div>
+        <!-- END #header -->
+        
+        <!-- BEGIN #page-header -->
+        <div id="page-header" class="section-container page-header-container bg-black hide">
+            <!-- BEGIN page-header-cover -->
+            <div class="page-header-cover">
+                <img src="{% static 'img/about-us-cover.jpg' %}" alt="" />
+            </div>
+            <!-- END page-header-cover -->
+            <!-- BEGIN container -->
+            <div class="container">
+                <h1 class="page-header"><b>About</b> Us</h1>
+            </div>
+            <!-- END container -->
+        </div>
+        <!-- BEGIN #page-header -->
+        <div class="container">
+
+        {% block primary %} {% endblock %}
+
+        </div>        
+      
+        {% with SITE_IDT|add:'/footer.html' as footer_static %}  
+            {% include footer_static %}
+        {% endwith %}
+    
+        <!-- BEGIN #footer-copyright -->
+        <div id="footer-copyright" class="footer-copyright">
+            <!-- BEGIN container -->
+            <div class="container">
+                <div class="payment-method">
+                    <img src="{% static 'img/payment_method.png' %}" alt="" />
+                </div>
+                <div class="copyright">
+                    &copy; {% now "Y" %}. All Rights Reserved. 
+                </div>
+            </div>
+            <!-- END container -->
+        </div>
+        <!-- END #footer-copyright -->
+    </div>
+    <!-- END #page-container -->
+    
+  <!-- ================== BEGIN BASE JS ================== -->
+  <script src="{% static 'plugins/jquery/jquery-1.9.1.min.js' %}"></script>
+  <script src="{% static 'plugins/jquery/jquery-migrate-1.1.0.min.js' %}"></script>
+  <script src="{% static 'plugins/jquery-ui/ui/minified/jquery-ui.min.js' %}"></script>
+  <script src="{% static 'plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+  <!--[if lt IE 9]>
+    <script src="{% static 'crossbrowserjs/html5shiv.js' %}"></script>
+    <script src="{% static 'crossbrowserjs/respond.min.js' %}"></script>
+    <script src="{% static 'crossbrowserjs/excanvas.min.js' %}"></script>
+  <![endif]-->
+  <script src="{% static 'plugins/jquery-cookie/jquery.cookie.js' %}"></script>
+  <script src="{% static 'plugins/parsley/dist/parsley.js' %}"></script>
+  <script src="{% static 'main/js/apps.min.js' %}"></script>
+  <!-- ================== END BASE JS ================== -->
+  
+  <script>
+      $(document).ready(function() {
+          App.init();
+      });
+  </script>
+  {% block lazy_js %} {% endblock %}
+</body>
+</html>

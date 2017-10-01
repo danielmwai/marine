@@ -1,0 +1,9 @@
+dj-database-url==0.4.1
+Django==1.8.11
+gunicorn==19.6.0
+psycopg2==2.6.2
+whitenoise==3.2
+django-simple-captcha==0.5.3
+reportlab==3.3.0
+openpyxl==2.4.0
+num2words==0.5.4

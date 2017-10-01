@@ -1,0 +1,1474 @@
+{% extends 'base.html' %}
+
+{% block page_title %} 
+{{block.super}} Marine cargo
+{% endblock page_title%}
+
+{% load staticfiles %}
+
+{% block style_code %}
+<link href="{% static 'plugins/select2/dist/css/select2.min.css' %}" rel="stylesheet" />
+<style type="text/css">
+  tr.border_bottom td {
+  border-bottom:2px solid #ddd;
+}
+
+tr.bbottom th {
+  padding-top: 10px;
+  padding-bottom:10px;
+}
+
+</style>
+{% endblock style_code %}
+
+
+{% block javascript_code %}
+{% endblock javascript_code %}
+
+{% block primary %}
+<!-- begin breadcrumb -->
+<ol class="breadcrumb pull-right">
+  <li><a href="javascript:;">Home</a></li>
+  <li><a href="javascript:;">Forms</a></li>
+  <li class="active">Cargo</li>
+</ol>
+<!-- end breadcrumb -->
+<!-- begin page-header -->
+<h1 class="page-header"><i class="fa fa-suitcase"></i> Marine cargo <small> Shipping, Insurance and Tax</small></h1>
+<!-- end page-header -->
+{% if messages %}
+    {% for message in messages %}
+    {% if 'error' in message.tags %}
+        <div id="messages" class="alert alert-danger fade in">
+        <span class="close" data-dismiss="alert">×</span>
+        <i class="fa fa-info fa-2x pull-left"></i>
+    {% else %}
+        <div id="messages" class="alert alert-success fade in">
+        <span class="close" data-dismiss="alert">×</span>
+        <i class="fa fa-check fa-2x pull-left"></i>
+    {% endif %}    
+        <p>{{ message }}</p>
+    </div>
+   {% endfor %}
+{% endif %}
+<div class="row">
+    <!-- begin col-12 -->
+    <div class="col-md-12">
+<div class="panel panel-inverse">
+    <div class="panel-heading">
+        <div class="panel-heading-btn">
+
+            <a href="#" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
+
+            <a href="#" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+        </div>
+        <h4 class="panel-title">Marine Cargo details </h4>
+    </div>
+    <div class="panel-body">
+        
+        <form class="form-bordered" action="." method="POST" id="cargo_details" data-parsley-validate="true" name="form-wizard" >
+        {% csrf_token %}
+  <div id="wizard">
+    <ol>
+      <li>
+          Customer Details
+          <small>Editing and verification.</small>
+      </li>
+      <li class="req">
+          Shipping Details
+          <small>Shipping details; Ports and dates.</small>
+      </li>
+      <li class="req">
+          Cargo Details
+          <small>Goods description.</small>
+      </li>
+      <li class="req">
+          Payment Option
+          <small>Payment options methods.</small>
+      </li>         
+    </ol>
+    <!-- begin wizard step-1 -->
+    <div class="primary">
+        <fieldset>
+            <legend class="pull-left width-full">Customer details</legend>
+            <!-- begin row -->
+     <div class="row">
+        {% if request.user.person_type == 1 %}
+        <div class="col-md-12">
+           {% if person %}
+           <table width="100%" class="table table-profile">
+              <tbody>
+                  <tr>
+                      <td class="field">Surname</td>
+                      <td>{{ person.surname }}</td>
+                      <td class="field">First Name</td>
+                      <td>{{ person.first_name }}</td>
+                      <td class="field">Middle Name</td>
+                      <td>{{ person.middle_name }}</td>
+                  </tr>
+                  <tr>
+                      <td class="field">Telephone</td>
+                      <td>{{ person.mobile_number }}</td>
+                      <td class="field">ID / Passport</td>
+                      <td>{{ person.idpass_number }}</td>
+                      <td class="field">KRA PIN</td>
+                      <td>{{ person.pin_number }}</td>
+                  </tr>
+              </tbody>
+            </table>
+            {% elif company %}
+            <table width="100%" class="table table-profile">
+              <tbody>
+                  <tr>
+                      <td class="field">Company Name</td>
+                      <td>{{ company.company_name }}</td>
+                      <td class="field">ETR No.</td>
+                      <td>{{ company.etr_number }}</td>
+                      <td class="field">KRA PIN</td>
+                      <td>{{ company.pin_number }}</td>
+                  </tr>
+              </tbody>
+            </table>
+            {% endif %}
+           <input type="hidden" name="person_id" id="person_id" value="{{ request.user.id }}">
+           </div>          
+        {% else %}
+        <div class="col-md-3">
+        <div class="form-group">
+            <label>Existing Customer <span class="asteriskField">*</span></label>
+            <select class="form-control" name="customer_type" id="customer_type" data-parsley-group="primary" data-parsley-required="true" >
+                <option value="">Please Select Type</option>
+                  <option value="1">No</option>
+                  <option value="2">Yes</option>
+                </select>
+          </div>
+        </div>
+        <!-- begin col-2 -->
+                <div class="col-md-3">
+          <div class="form-group">
+            <label>Customer Type <span class="asteriskField">*</span></label>
+            <div class="input-group" id="ctype">
+                  <input type="radio" class="client_type" name="client_type" id="client_type_1" value="1" checked />
+                  Individual
+                  <input type="radio" class="client_type" name="client_type" id="client_type_2" value="2" />
+                  Company
+              </div>
+          </div>
+                </div>
+                <!-- end col-2 -->
+          <div class="col-md-2" id="search_reg_div">
+          <div class="form-group">
+          <label></label>
+           <a href="#modal-registration" data-toggle="modal"><button type="button" class="form-control btn btn-sm btn-primary m-r-5"><i class="fa fa-pencil"></i>&nbsp; Register Customer</button></a>
+           </div>
+        </div>
+        <!-- begin col-2 -->
+        <div class="col-md-3" id="search_pin_div">
+          <div class="form-group">
+            <label>Type any 4 letters of KRA PIN or ID No. <span class="asteriskField">*</span></label>
+            <input type="text" class="form-control" name="search_pin" id="search_pin" >
+          </div>
+                </div>
+                <!-- end col-2 -->
+                <!-- begin col-2 -->
+        <div class="col-md-3" id="customer_pin_div">
+          <div class="form-group">
+            <label>KRA PIN <span class="asteriskField">*</span></label>
+            <input type="text" class="form-control" name="customer_pin" id="customer_pin" data-parsley-group="primary" readonly="readonly">
+            <input type="hidden" name="person_id" id="person_id">
+          </div>
+                </div>
+                <!-- end col-2 -->
+                {% endif %}
+            </div>
+            <!-- end row -->
+         </fieldset>
+          </div>
+          <!-- end wizard step-1 -->
+    <!-- begin wizard step-1 -->
+    <div class="primary1">
+        <fieldset>
+            <legend class="pull-left width-full">Shipping details</legend>
+            <div class="row">
+              <div class="col-md-3">
+                  <div class="form-group">
+                      <label>Transaction Type <span class="asteriskField">*</span></label>
+                        <select class="form-control" name="transact_type" id="transact_type" data-parsley-group="primary1" data-parsley-required="true" >
+                            <option value="">Please select Type</option>
+                            <option value="1">Import</option>
+                            <option value="2">Export</option>
+                        </select>
+                  </div>
+              </div>
+              <!-- end col-2 -->
+              <!-- begin col-3 -->
+                <div class="col-md-3">
+                <label>Mode of Transport <span class="asteriskField">*</span></label>
+                <div class="input-group" id="tmode">
+                    <input type="radio" name="transport_mode" value="1" checked />
+                    Sea
+                    <input type="radio" name="transport_mode" value="2" />
+                    Air
+                    <!--
+                    <input type="radio" name="transport_mode" value="3" />
+                    Road
+                    <input type="radio" name="transport_mode" value="3" />
+                    Rail
+                    -->
+                </div>
+          </div>
+                <!-- end col-3 -->
+                <!-- begin col-3 -->
+                <div class="col-md-3" id="vessel_name_div">
+                <label>Vessel</label>
+                    {{ form.vessel_name }}
+          </div>
+                <!-- end col-3 -->
+        </div>
+            <!-- begin row -->
+     <div class="row" id="importation_div">
+        <div class="col-md-3">
+        <div class="form-group">
+          <label>Country of Origin <span class="asteriskField">*</span></label>
+              {{ form.country_id }}
+          </div>
+        </div>
+                <!-- begin col-2 -->
+                <div class="col-md-3">
+          <div class="form-group">
+            <label>Port of Origin <span class="asteriskField">*</span></label>
+            <select class="form-control" name="port_id" id="port_id" >
+            </select>
+          </div>
+                </div>
+                <!-- end col-2 -->
+                <!-- begin col-2 -->
+                <div class="col-md-3">
+          <div class="form-group">
+            <label>Destination Port <span class="asteriskField">*</span></label>
+                  <select class="form-control" name="dest_port" id="dest_port" data-parsley-group="primary1" data-parsley-required="true" >
+                      <option value="">Please Select Port</option>
+                      <option value="351">Mombasa</option>
+                  </select>
+          </div>
+                </div>
+                <!-- end col-2 -->
+                <!-- begin col-2 -->
+                <div class="col-md-3">
+          <div class="form-group">
+            <label>Inland Warehouse</label>
+                  {{ form.warehouse }}
+          </div>
+                </div>
+                <!-- end col-2 -->
+            </div>
+            <!-- end row -->
+            <!-- begin row -->
+     <div class="row" id="exportation_div">
+     <!-- begin col-2 -->
+                <div class="col-md-3">
+          <div class="form-group">
+            <label>Port of Origin</label>
+                        <select class="form-control" name="exp_port_id" id="exp_port_id" data-parsley-group="primary1" >
+                            <option value="">Please Select Port</option>
+                            <option value="351">Mombasa</option>
+                        </select>
+          </div>
+                </div>
+                <!-- end col-2 -->
+        <div class="col-md-3">
+        <div class="form-group">
+          <label>Country of Destination <span class="asteriskField">*</span></label>
+              {{ form.ex_country_id }}
+          </div>
+        </div>
+                <!-- begin col-2 -->
+                <div class="col-md-3">
+          <div class="form-group">
+            <label>Port of Destination <span class="asteriskField">*</span></label>
+            <select class="form-control" name="exp_dest_port" id="exp_dest_port">
+            </select>
+          </div>
+                </div>
+                <!-- end col-2 -->
+                <!-- begin col-2 -->
+                <div class="col-md-3">
+          <div class="form-group">
+            <label>Inland Warehouse</label>
+                <input class="form-control" name="exp_warehouse" id="exp_warehouse" data-parsley-group="primary1" >
+          </div>
+                </div>
+                <!-- end col-2 -->
+            </div>
+            <!-- end row -->         
+            <!-- begin row -->
+            <div class="row">
+                <!-- begin col-2 -->
+                <div class="col-md-3">
+          <div class="form-group">
+            <label>Voyage start date <span class="asteriskField">*</span></label>
+            <div class="input-group date">
+                <input type="text" class="form-control" name="voyage_start" id="datepicker-voyage-start" placeholder="Select start Date" data-date-format="yyyy-mm-dd" data-date-start-date="Date.default" data-parsley-group="primary1" data-parsley-errors-container="#sdate_error" required/>
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                </div>
+            <div id="sdate_error"></div>
+          </div>
+                </div>
+                <!-- end col-2 -->
+                <!-- begin col-3 -->
+                <div class="col-md-3">
+          <div class="form-group">
+            <label>Expected date of arrival <span class="asteriskField">*</span></label>
+            <div class="input-group date" id="datepicker-voyage-end" data-date-format="yyyy-mm-dd" data-date-start-date="Date.default">
+                <input type="text" class="form-control" name="voyage_end" id="voyage_end" placeholder="Select end Date" data-parsley-group="primary1"  data-parsley-errors-container="#edate_error" required />
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                </div>
+              <div id="edate_error"></div>
+          </div>
+                </div>
+                <!-- end col-3 -->
+                <div class="col-md-3">
+                    <div class="form-group">
+                      <label>Mode of Logistics <span class="asteriskField">*</span></label>
+                        <select class="form-control" name="logistics_id" id="logistics_id" data-parsley-group="primary1" data-parsley-required="true" >
+                            <option value="">Please select Mode</option>
+                            <option value="1">Own Freight arrangement</option>
+                            <option value="2">Consolidation</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- begin col-3 -->
+                <div class="col-md-3" id="consolidators_div">
+                  <div class="form-group">
+                    <label>Consolidator <span class="asteriskField">*</span></label>
+                    {{ form.conso_id }}
+                  </div>
+                </div>
+                <!-- end col-3 -->
+                
+            </div>
+            <!-- end row -->
+        </fieldset>
+          </div>
+          <!-- end wizard step-1 -->
+          <!-- begin wizard step-2 -->
+          <div class="primary2">
+            <fieldset>
+              <legend class="pull-left width-full">Description of Goods</legend>
+            <!-- begin row -->
+            <div class="row">
+                <div class="col-md-3" id="transact_div">
+                <div class="form-group">
+                    <label>How would you like to transact <span class="asteriskField">*</span></label>
+                    {{ form.transact_mode }}
+                </div>
+              </div>
+
+              <div class="col-md-3" id="bank_id_div">
+                <div class="form-group">
+                    <label>Bank <span class="asteriskField">*</span></label>
+                    {{ form.bank_id }}
+                </div>
+              </div>
+            </div>
+            
+            <!-- begin row -->
+            <div class="row">
+            <div class="col-md-1">
+                <div class="form-group">
+                  <label>Currency <span class="asteriskField">*</span></label>
+                {{ form.currency }}
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                  <label>Exchange Rate <span class="asteriskField">*</span></label>
+                <input type="text" class="form-control" name="exchange_rate" id="exchange_rate" readonly="readonly" value="1.0000">
+                </div>
+            </div>
+            <!-- end col-3 -->
+            <!-- begin col-3 -->             
+            {% if CO_TYPE > 1 or SITE_ID  == 1 %}
+                <div class="col-md-3">
+                <div class="form-group">
+                  <label>Insurance Company <span class="asteriskField">*</span></label>
+                {{ form.insurance_co }}
+                </div>
+                </div>
+                <!-- begin col-3 -->
+            {% else %}
+                <input type="hidden" name="insurance_co" id="insurance_co" value="{{ CO_ID }}">
+            {% endif %}
+
+          <div class="col-md-3">
+          {% if request.user.person_type == 2 %}
+          <input type="hidden" name="broker_id" id="broker_id" value="{{ request.user.company_id }}">
+          {% elif CO_TYPE == 2 %}
+          <input type="hidden" name="broker_id" id="broker_id" value="{{ CO_ID }}">
+
+          {% else %}
+          <div class="form-group">
+            <label>Insurance handler <span class="asteriskField">*</span></label>
+            <div class="input-group">
+                  <input type="radio" class="ihandler" name="ins_handler" id="ins_handler_1" value="1" checked />
+                  Direct
+                  <input type="radio" class="ihandler" name="ins_handler" id="ins_handler_2" value="2" />
+                  Broker
+                  <input type="radio" class="ihandler" name="ins_handler" id="ins_handler_3" value="3" />
+                  Agent
+              </div>
+          </div>
+          
+                </div>
+                <!-- end col-2 -->
+                <!-- begin col-2 -->
+                <div class="col-md-3" id="agent_div">
+          <div class="form-group">
+            <label>Agent (Search by IRA No. or Name) <span class="asteriskField">*</span></label>
+            <input type="text" name="agent_name" id="agent_name" class="form-control"  />
+          </div>
+                </div>
+                <!-- end col-2 -->
+                <!-- begin col-2 -->
+                <div class="col-md-3" id="broker_div">
+          <div class="form-group">
+            <label>Broker <span class="asteriskField">*</span></label>
+            {{ form.broker_id }}
+          </div>
+                </div>
+                <!-- end col-2 -->
+                <!-- begin col-2 -->
+                <div class="col-md-3" id="ira_number_div">
+          <div class="form-group">
+          <label>IRA Number <span class="asteriskField">*</span></label>
+            <input type="text" class="form-control" name="ira_number" id="ira_number" readonly="readonly" data-parsley-group="primary2">
+            <input type="hidden" name="agent_id" id="agent_id">
+          </div>
+                </div>
+                <!-- end col-2 -->
+          {% endif %}
+            </div>
+            <!-- end row -->
+            <div class="row" style="margin: 10px; border-top: 2px solid #ddd">
+            <div id="errors"></div>
+            </div>
+            <!-- begin row -->
+            <div class="row">
+               
+                <!-- begin col-3 -->
+                <div class="col-md-5">
+                    <div class="form-group">
+                      <label>Category of Goods <span class="asteriskField">*</span></label>
+                        {{ form.goods_category }}
+                      </div>
+                    </div>
+                <!-- end col-3 -->
+                <!-- begin col-3 -->
+                <div class="col-md-7">
+                    <div class="form-group">
+                      <label>Goods details <span class="asteriskField">*</span></label>
+                        {{ form.goods_type }}
+                      </div>
+                    </div>
+                <!-- end col-3 -->
+                
+              </div>
+            <div class="row" id="goods_div">
+                <!-- begin col-3 -->
+                <div class="col-md-3">
+                    <div class="form-group">
+                      <label>Package Type <span class="asteriskField">*</span></label>
+                        <select class="form-control" name="package_type" id="package_type" >
+                            <option value="">Please Select Type</option>
+                            <option value="1">Containerized</option>
+                            <option value="2">Non-Containerized</option>
+                        </select>
+                      </div>
+                    </div>
+                <!-- end col-3 -->
+                <!-- begin col-3 -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Cover Type <span class="asteriskField">*</span></label>
+                      <div class="input-group">
+                            <input type="radio" class="cover" name="cover" id="cover_1" value="1" checked />
+                            ICC A <a href="#" data-toggle="tooltip" title="It covers all risks of physical loss or damage, subject to the following exclusions: Exclusions enumerated in ICC (C) and (B) above; Loss due to any inherent vice or nature of the cargo and losses caused by moth and vermin."><i class="fa fa-info-circle fa-lg"></i></a> &nbsp;
+                            <input type="radio" class="cover" name="cover" id="cover_2" value="2" />
+                            ICC B <a href="#" data-toggle="tooltip" title="These policies cover only named perils and exclude the following: War and SRCC; losses due to delay; losses arising from willful misconduct of the insured; wear and tear; depreciation."><i class="fa fa-info-circle fa-lg"></i></a> &nbsp;
+                            <input type="radio" class="cover" name="cover" id="cover_3" value="3" />
+                            ICC C <a href="#" data-toggle="tooltip" title="These policies cover only named perils and exclude the following: War and SRCC; losses due to delay; losses arising from willful misconduct of the insured; wear and tear; depreciation."><i class="fa fa-info-circle fa-lg"></i></a> &nbsp;
+                        </div>
+                      </div>
+                    </div>
+                <!-- end col-3 -->
+               
+            </div>
+            <div class="row" id="details_div">
+                <!-- begin col-3 -->
+                <div class="col-md-11">
+                    <div class="form-group">
+                      <label>Vehicle details</label>
+                        <input type="text" class="form-control" name="goods_details" id="goods_details" readonly="readonly">
+                      </div>
+                    </div>
+                <!-- end col-3 -->
+                <!-- begin col-2 -->
+                <div class="col-md-1">
+                    <div class="form-group">
+                    <label>Details</label>
+                      <a href="#modal-details" class="btn btn-sm btn-success paylink" id="1" data-toggle="modal"><i class="fa fa-plus"></i> More</a>
+                    </div>
+                  </div>
+                <!-- end col-2 -->
+            </div>
+            <div class="row" id="price_div">
+                <!-- begin col-3 -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Name of supplier <span class="asteriskField">*</span></label>
+                        <input type="text" class="form-control" name="goods_supplier" id="goods_supplier">
+                      </div>
+                    </div>
+                <!-- end col-3 -->
+                <!-- begin col-3 -->
+                <div class="col-md-2">
+                    <div class="form-group">
+                      <label>Freight cost <span class="asteriskField">*</span></label>
+                        <input class="form-control" name="freight_cost" id="freight_cost" data-parsley-type="number" data-parsley-min="0" data-parsley-group="primary2" 
+                        data-parsley-required="true">
+                      </div>
+                    </div>
+                <!-- end col-3 -->
+                
+                
+                <!-- begin col-2 -->
+                <div class="col-md-1">
+          <div class="form-group">
+            <label>Quantity <span class="asteriskField">*</span></label>
+            <input type="text" name="quantity" id="quantity" class="form-control" />
+          </div>
+                </div>
+                <!-- end col-2 -->
+                <!-- begin col-2 -->
+                <div class="col-md-2">
+          <div class="form-group">
+            <label>Value / Price per Item </label>
+            <input type="text" name="price" id="price" class="form-control" />
+          </div>
+                </div>
+                <!-- end col-2 -->
+                <!-- begin col-1 -->
+                <div class="col-md-1">
+          <div class="form-group">
+            <br />
+            <div class="btn-group m-r-5">
+            <button type="button" class="btn btn-inverse" id="add_goods"><i class="fa fa-plus"></i> Add</button>
+            </div>
+          </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- end col-2 -->
+                <table class="table table-hover" id="myorders">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Details</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Sum Insured</th>
+                            <th>Premium Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <div id="total_premium_div"><input class="form-control" data-parsley-min-message="Please add atleast one Item to calculate premium" id="total_premium" name="total_premium" readonly="readonly" data-parsley-type="number" step="0.01" min="1" data-parsley-group="primary2"  required />
+                <input type="hidden" name="total_premiums" id="total_premiums">
+                <input type="hidden" name="total_tax" id="total_tax">
+                <input type="hidden" name="total_freight" id="total_freight">
+                <input type="hidden" name="total_cost" id="total_cost">
+                <input type="hidden" name="total_amount" id="total_amount">
+                <input type="hidden" name="sum_assured" id="sum_assured">
+                </div>
+            </div>
+
+            <div class="row">
+            <div class="col-md-8">
+                <label>Optional addition insurance extensions</label>
+                    {% if SITE_ID  == 2 %}
+                    <input type="checkbox" name="tax_se" value="1" /> Storage Extension
+                    {% else %}
+                    <input type="checkbox" name="tax_ts" value="1" /> Transhipment
+                    <input type="checkbox" name="tax_se" value="1" /> Storage Extension
+                    <input type="checkbox" name="tax_ov" value="1" /> Overage Vessels
+                    <input type="checkbox" name="tax_sl" value="1" /> Short Landing
+                    {% endif %}
+                </div>
+            </div>
+            <!-- end row -->
+            </fieldset>
+          </div>
+          <!-- end wizard step-2 -->
+          <!-- begin wizard step-3 -->
+          <div class="primary3">
+            <fieldset>
+              <legend class="pull-left width-full">Payment methods</legend>
+            <!-- begin row -->
+            <div class="row">
+                <div class="col-md-7">
+                <table class="table table-hover" id="mypayments">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th align="right">Rate</th>
+                            <th align="right">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <div class="row">
+                <div class="form-group" id="pmode">
+                    <label class="col-md-4 control-label">Payment method</label>
+                    <div class="col-md-8">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="payment_mode" value="1" checked />
+                                Direct To Bank
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="payment_mode" value="2" />
+                                Direct To Card
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="payment_mode" value="3" />
+                                 M-Pesa
+                            </label>
+                        </div>
+                        <div class="radio" id="ipf_div">
+                            <label>
+                                <input type="radio" name="payment_mode" value="4" />
+                                 Insurance Premium Finance (IPF)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" id="pay_bank_div">
+                    <label class="col-md-4 control-label">Bank</label>
+                    <div class="col-md-8">
+                        {{ form.pay_bank }}
+                    </div>
+                </div>
+                <div class="form-group" id="popt">
+                    <label class="col-md-4 control-label">Payment Option</label>
+                    <div class="col-md-8">
+                        <input type="radio" name="payment_option" value="1" checked />
+                        Pay Now
+                        <input type="radio" name="payment_option" value="2" />
+                        Pay Later
+                    </div>
+                </div>
+            </div>
+            <!-- end row -->
+                </div>
+                <div class="col-md-5">
+                   <div class="m-b-15" style="border:1px solid #ccc; border-radius: 15px; padding: 20px;">
+                      <strong>Direct to Bank</strong>
+                      <p>
+                      The system will generate a banking slip to present to the preferred bank for payment.
+                      </p>
+                      <br/>
+                      <strong>Direct to Card</strong>
+                      <p>
+                      The system will require you to fill your Debit/Credit card details to be billed.
+                      </p>
+                      <br/>
+                      <strong>M-Pesa</strong>
+                      <p>
+                      The system will guide you on how to pay using our paybill and the reference number to use.
+                      </p>
+                    </div>
+                </div>
+              </div>
+              
+            <div class="row">
+                <div class="col-md-12">
+                <p></p>
+                <hr>
+                <p><strong>Note these nine (9) documents have to be provided when lodging a claim</strong>: Pre-Export Verification of  Conformity (PVoC), Packaging List, Bill of Lading, Commercial Invoice, Import Declaration Form (IDF), Marine Certificate, Swift TT Records and Cash Receipts.
+                </div>
+            </div>
+        </fieldset>
+          </div>
+          <!-- end wizard step-4 -->
+        </div>
+          <div class="row" id="form_actions">
+                <div class="form-group">
+                    <label class="control-label col-md-4 col-sm-4"></label>
+                    <div class="col-md-6 col-sm-6">
+                        <button type="submit" class="btn btn-primary" value="submit" id="s1">Submit</button>
+                        <a href="{% url 'home' %}">
+                        <button type="button" class="btn btn-sm btn-default">Cancel</button></a>
+                    </div>
+                </div>
+            </div>
+      </form>
+              </div>
+          </div>
+          <!-- end panel -->
+      </div>
+      <!-- end col-12 -->
+  </div>
+  <!-- end row -->
+
+  <!-- #modal-dialog -->
+      <div class="modal fade" id="modal-details">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+              <h4 class="modal-title">Vehicle details</h4>
+            </div>
+            <div class="modal-body">
+                  <table class="table table-profile">
+                     <tr>
+                         <td class="field">Make</td>
+                         <td>{{ form.car_make }}</td>
+                      </tr>
+                      <tr>
+                         <td class="field">Model</td>
+                         <td><input type="text" class="form-control" name="car_model" id="car_model"></td>
+                      </tr>
+                      <tr>
+                         <td class="field">Year</td>
+                         <td><input type="text" class="form-control" name="car_year" id="car_year"></td>
+                      </tr>
+                      <tr>
+                         <td class="field">CC</td>
+                         <td><input type="text" class="form-control" name="car_cc" id="car_cc"></td>
+                      </tr>
+                      <tr>
+                         <td class="field">Chasis No.</td>
+                         <td><input type="text" class="form-control" name="car_chasis" id="car_chasis"></td>
+                      </tr>
+                      <tr>
+                         <td class="field">Engine No.</td>
+                         <td><input type="text" class="form-control" name="car_engine" id="car_engine"></td>
+                      </tr>
+                  </table>
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn btn-sm btn-white" data-dismiss="modal">Close</a>
+              <a href="#" id="gdetail" class="btn btn-sm btn-success">Proceed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- #modal-dialog -->
+      <!-- start modal-dialog -->
+        <div class="modal fade" id="modal-registration">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">New Customer Registration</h4>
+              </div>
+              <div class="modal-body" style="margin:10px;">
+                 <form class="form-bordered" action="." method="POST" id="new_customer" data-parsley-validate="true" name="new_customer" >
+                  {% csrf_token %}
+                  <div id="regerrors"></div>
+                  <div class="row">
+                        <div class="col-md-6">
+                        <label class="control-label">KRA PIN Number</label>
+                        <div class="m-b-15">
+                                {{ rform.kra_pin }}
+                            </div>
+                        </div>
+                        <div class="col-md-6" id="id_number_div">
+                        <label class="control-label">National ID / Passport Number</label>
+                        <div class="m-b-15">
+                                {{ rform.id_number }}
+                        </div>
+                        </div>
+                        <div class="col-md-6" id="etr_number_div">
+                        <label class="control-label">ETR Number</label>
+                        <div class="m-b-15">
+                            {{ rform.etr_number }}
+                            </div>
+                        </div>
+                  </div>
+                  <div class="row">
+                        <div class="col-md-6" id="surname_div">
+                        <label class="control-label">Surname</label>
+                        <div class="m-b-15">
+                             {{ rform.surname }}
+                        </div>
+                        </div>
+                        <div class="col-md-6" id="first_name_div">
+                        <label class="control-label">First Name</label>
+                        <div class="m-b-15">
+                            {{ rform.first_name }}
+                        </div>
+                        </div>
+                        <div class="col-md-6" id="company_name_div">
+                        <label class="control-label">Company Name</label>
+                        <div class="m-b-15">
+                            {{ rform.company_name }}
+                        </div>
+                        </div>
+                        
+                  </div>
+                  <div class="row">
+                        <div class="col-md-6" id="middle_name_div">
+                        <label class="control-label">Middle Name</label>
+                        <div class="m-b-15">
+                                {{ rform.middle_name }}
+                        </div>
+                        </div>
+                        <div class="col-md-6" id="coreg_number_div">
+                        <label class="control-label">Company Registration Number</label>
+                        <div class="m-b-15">
+                            {{ rform.coreg_number }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                        <label class="control-label">Mobile Telephone Number</label>
+                        <div class="m-b-15">
+                                {{ rform.mobile_number }}
+                            </div>
+                        </div>
+                   </div>
+                  <div class="row">
+                        <div class="col-md-6" id="tax_status_div">
+                        <label class="control-label">Tax status</label>
+                        <div class="m-b-15">
+                            {{ rform.tax_status }}
+                        </div>
+                        </div>
+                        <div class="col-md-6">
+                        <label class="control-label">Postal Address</label>
+                        <div class="m-b-15">
+                                {{ rform.postal_address }}
+                            </div>
+                        </div>
+                        <div class="col-md-6" id="phy_address_div">
+                        <label class="control-label">Physical Address</label>
+                        <div class="m-b-15">
+                                {{ rform.phy_address }}
+                            </div>
+                        </div>
+                  </div>
+                  <div class="row">
+                         <div class="col-md-12">
+                        <label class="control-label">Email Address</label>
+                        <div class="m-b-15">
+                                {{ rform.email }}
+                            </div>
+                        </div>
+                    <p>Customer credentials and account activation link will be sent to the customer's email address</p>
+
+                   </div>
+              </div>
+
+              <div class="modal-footer">
+                <a href="#" class="btn btn-sm btn-white" data-dismiss="modal">Close</a>
+                <button type="submit" id="ireg" class="btn btn-sm btn-success">Save </button>
+              </div>
+            </div>
+            </form>
+          </div>
+        </div>
+      <!-- ednd modal-dialog -->
+
+</div>
+{% endblock primary %}
+
+{% block lazy_js %}
+<script src="{% static 'js/form-wizards.js' %}"></script>
+<script src="{% static 'plugins/select2/dist/js/select2.min.js' %}"></script>
+<script src="{% static 'plugins/autoNumeric/dist/autoNumeric.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+      FormWizardValidation.init();
+      //
+      $('#myorders').hide();
+      $('#currency').val('1');
+      $('#goods_category').html('{{ categories|safe }}');
+      $('#price').autoNumeric('init');
+      var ctype = $('input[name=client_type]:checked', '#cargo_details').val();
+      handle_clients(ctype);
+
+      // Transactions
+      {% if request.get_host  == 'portal.marineinsurance.co.ke' %}
+          $('#transact_div').show();
+          $('#transact_mode').attr("data-parsley-required", "true");
+      {% else %}
+          $('#transact_div').hide();
+          $('#transact_mode').attr("data-parsley-required", "false");
+          $("#bank_id_div").hide();
+          $('#bank_id').attr("data-parsley-required", "false");
+          $("#ipf_div").hide();
+      {% endif %}
+
+      $("#form_actions").hide();
+      $("#total_premium_div").hide();
+      $("#bank_id_div").hide();
+      $("#transact_mode").val('');
+
+      $("#total_premium").val(0);
+      $('#country_id').val('');
+      $('#country_id').change(function(){
+          var csrftoken = $.cookie('csrftoken');
+          var data = {'csrfmiddlewaretoken': csrftoken, 'filter': 'ports',
+                      'country_id': $(this).val()};
+          $('#port_id').load("/forms/", data);
+        });
+
+       $('#goods_section').val('');
+      $('#goods_section').change(function(){
+          var csrftoken = $.cookie('csrftoken');
+          var data = {'csrfmiddlewaretoken': csrftoken, 'filter': 'category', 'section_id': $(this).val()};
+          $('#goods_category').load("/forms/", data);
+        });
+
+      $('#goods_category').change(function(){
+          var csrftoken = $.cookie('csrftoken');
+          var data = {'csrfmiddlewaretoken': csrftoken, 'filter': 'goods',
+                      'category_id': $(this).val()};
+          $('#goods_type').load("/forms/", data);
+          var cat_id = $('#goods_category').val();
+          if (cat_id == '87'){
+              $("#details_div").show();
+          }else{
+              $("#details_div").hide();  
+          }
+      });
+
+      //Currency
+      $('#currency').change(function(){
+          var csrftoken = $.cookie('csrftoken');
+          var currency = $(this).val();
+          var data = {'csrfmiddlewaretoken': csrftoken, 'filter': 'currency','currency_id': currency};
+          $.ajax({
+             type: "POST",
+             url: "{% url 'forms_search' %}",
+             dataType: "json",
+             data: data,
+             success: function(data)
+             {
+                 var status = data.status;
+                 var x_rate = data.x_rate;
+                 $('#exchange_rate').val(x_rate);
+              },
+              error: function(){
+                  $("#regerrors").html('An error occured.');
+                  $("#regerrors").addClass( "alert alert-danger fade in" );
+              }
+           });
+        });
+
+      //Registration      
+      $("#new_customer").submit(function(e){
+            e.preventDefault();
+            $("#regerrors").removeClass( "alert alert-danger fade in" );
+
+            $('#new_customer').parsley().validate("registration");
+            var ctype = $("#customer_type").val();
+
+           if ($('#new_customer').parsley().isValid()){
+                 $.ajax({
+                     type: "POST",
+                     url: "{% url 'new_client' %}",
+                     dataType: "json",
+                     data: $("#new_customer").serialize() + "&ctype="+ctype,
+                     success: function(data)
+                     {
+                         var status = data.status;
+                         var msg = data.message;
+                         var person_id = data.person_id;
+                         var pin = $('#kra_pin').val();
+                         if (status == 0){
+                             $("#regerrors").html(msg);
+                             $("#regerrors").addClass( "alert alert-success fade in" );
+                             $('#person_id').val(person_id);
+                             $('#customer_pin').val(pin);
+                             $('#customer_pin_div').show();
+                             $("#search_reg_div").hide();
+                             $("#kra_pin").val("");
+                             $('#modal-registration').modal('toggle');
+                          }else{
+                              $("#regerrors").html(msg);
+                              $("#regerrors").addClass( "alert alert-danger fade in" );
+                          }
+                     },
+                      error: function(){
+                          $("#regerrors").html('An error occured while creating account. Please try again.');
+                          $("#regerrors").addClass( "alert alert-danger fade in" );
+                      }
+                   });
+
+            }else{
+                $("#regerrors").html('Please fill all the fields correctly.');
+                 $("#regerrors").addClass( "alert alert-danger fade in" );
+            }
+
+        });
+
+      $('#transact_mode').change(function(){
+        var mode_id = $('#transact_mode').val();
+        if (mode_id == '2'){
+            $("#bank_id_div").show();
+            $('#bank_id').attr("data-parsley-required", "true");
+            $("#ipf_div").show();
+        }else{
+            $("#bank_id_div").hide();
+            $('#bank_id').attr("data-parsley-required", "false");
+            $("#ipf_div").hide();
+        }
+
+      });
+
+      //Agents and brokers
+      $('#agent_div').hide();
+      $('#broker_div').hide();
+      $('#ira_number_div').hide();
+      $(".ihandler").change(function() {
+        var handler = $('input[name=ins_handler]:checked', '#cargo_details').val();
+        if(handler == '2') {
+            $('#broker_div').show();
+            $('#agent_div').hide();
+            $('#ira_number').attr("data-parsley-required", "false");
+            $('#broker_id').attr("data-parsley-required", "true");
+            $('#ira_number_div').hide();           
+        }else if(handler == '3') {
+            $('#agent_div').show();
+            $('#broker_div').hide();
+            $('#ira_number').attr("data-parsley-required", "true");
+            $('#broker_id').attr("data-parsley-required", "false");
+            $('#ira_number_div').show();           
+        }else{
+            $('#agent_div').hide();
+            $('#broker_div').hide();
+            $('#ira_number').attr("data-parsley-required", "false");
+            $('#broker_id').attr("data-parsley-required", "false");
+            $('#ira_number_div').hide();
+        }
+    });
+
+      //Import export
+      $("#transact_type").val('');
+      $("#exportation_div").hide();
+      $("#details_div").hide();
+      $("#importation_div").show();
+      $("#transact_type").change(function(e) {
+          var transact_type = $("#transact_type").val();
+          if (transact_type == '2'){
+            $("#exportation_div").show();
+            $("#importation_div").hide();
+            $('#port_id').attr("data-parsley-required", "false");
+            $('#dest_port').attr("data-parsley-required", "false");
+            $('#country_id').attr("data-parsley-required", "false");
+            $('#ex_port_id').attr("data-parsley-required", "true");
+            $('#ex_dest_port').attr("data-parsley-required", "true");
+            $('#ex_warehouse').attr("data-parsley-required", "true");
+            $('#ex_country_id').attr("data-parsley-required", "true");
+          }else{
+            $("#exportation_div").hide();
+            $("#importation_div").show();
+            $('#port_id').attr("data-parsley-required", "true");
+            $('#dest_port').attr("data-parsley-required", "true");
+            $('#country_id').attr("data-parsley-required", "true");
+            $('#ex_port_id').attr("data-parsley-required", "false");
+            $('#ex_dest_port').attr("data-parsley-required", "false");
+            $('#ex_warehouse').attr("data-parsley-required", "false");
+            $('#ex_country_id').attr("data-parsley-required", "false");
+          }
+      });
+
+      // Selection of goods
+      $("#price_div").hide();
+
+      $("#goods_type").change(function(e) {
+          var goods_type = $("#goods_type").val();
+          if (goods_type != ''){
+            $("#price_div").show();
+          }
+      });
+
+      $("#myorders").delegate(".remove_itm", "click", function() {
+        var id = $(this).attr('id');
+       // Remove these items
+       $.ajax({
+               type: "POST",
+               url: "{% url 'premiums' %}",
+               dataType: "json",
+               data: $("#cargo_details").serialize() + "&item_id="+id,
+               success: function(data)
+               {
+                   var status = data.status;
+                   if (status == 0){
+                   $('#myorders > tbody').html(data.response);
+                   $("#total_premium").val(data.premium);
+                   $('#mypayments > tbody').html(data.taxes);
+                   $("#errors").addClass( "alert alert-success fade in" );
+                   $('#errors').html("Item removed successfully");
+                   //
+                   $("#quantity").val('');
+                   $("#price").val('');
+                   $("#total_premiums").val(data.premium);
+                   $("#total_tax").val(data.tax);
+                   $("#total_freight").val(data.freight);
+                   $("#total_cost").val(data.cost);
+                   $("#total_amount").val(data.amount);
+                   $("#sum_assured").val(data.sum_assured);
+                   $('#cargo_details').parsley().validate("primary2");
+                 }else{
+                  $("#errors").addClass( "alert alert-success fade in" );
+                   $('#errors').html(data.message);
+                   //
+
+                 }
+               },
+                error: function(){
+                    $("#errors").addClass( "alert alert-danger fade in" );
+                    $('#errors').html("Error calculating premium for selected item");
+                }
+             });
+          //$('#myorders > tbody:last-child').append(goods);
+          $("#goods_type").val('');
+          $("#price_div").hide();
+          $("#errors").removeClass( "alert alert-danger fade in" );
+          $("#errors").removeClass( "alert alert-success fade in" );
+    });
+
+      // Selection of goods
+      $("#search_reg_div").hide();
+      $("#search_pin_div").hide();
+      $("#customer_pin_div").hide();
+      $("#customer_type").val('');
+      $("#search_pin").val('');
+      $("#customer_pin").val('');
+
+      $("#customer_type").change(function(e) {
+          var cus_type = $("#customer_type").val();
+          if (cus_type == '2'){
+            $("#search_reg_div").hide();
+            $("#search_pin_div").show();
+            $("#customer_pin_div").show();
+            $('#customer_pin').attr("data-parsley-required", "true");
+          }else{
+            $("#search_reg_div").show();
+            $("#search_pin_div").hide();
+            $("#customer_pin_div").show();
+            $('#customer_pin').attr("data-parsley-required", "true");
+          }
+      });
+
+      // Handle consolidators
+      var logistics_id = $("#logistics_id").val();
+      if (logistics_id == '2'){
+          $("#consolidators_div").show();
+          $('#conso_id').attr('required', '');
+          $('#conso_id').attr('data-parsley-group', 'wizard-step-1');
+      }else{
+          $("#consolidators_div").hide(); 
+      }
+
+      var ctype = $('input[name=client_type]:checked', '#cargo_details').val();
+      $('#ctype').click(function() { 
+        ctype = $('input[name=client_type]:checked', '#cargo_details').val();
+        handle_clients(ctype);
+      });
+
+
+      $("#logistics_id").change(function(e) {
+          var logistics_id = $("#logistics_id").val();
+          if (logistics_id == '2'){
+            $("#consolidators_div").show();
+            $('#conso_id').attr('required', '');
+            $('#conso_id').attr('data-parsley-group', 'wizard-step-1');
+          }else{
+            $("#consolidators_div").hide(); 
+          }
+      });
+      var ins_id = $("#insurance_co").val();
+      $("#insurance_co").change(function(e) {          
+          var total_premium = $("#total_premium").val();
+          if (total_premium != '0'){
+            $("#insurance_co").val(ins_id);
+            $("#errors").html("Please complete the order and pay before changing insurance.");
+            $("#errors").addClass( "alert alert-danger fade in" );
+          }
+      });
+
+      $('#pmode').click(function() { 
+      var pay_mode = $('input[name=payment_mode]:checked', '#cargo_details').val();
+        if ((pay_mode == '1') || (pay_mode == '4')){
+           $("#pay_bank_div").show();
+           $('#pay_bank').attr("data-parsley-required", "true");
+        }else{
+          $("#pay_bank_div").hide();
+          $('#pay_bank').attr("data-parsley-required", "false");
+        }
+      });
+      var trans_mode = $('input[name=transport_mode]:checked', '#cargo_details').val();
+      handle_vessel(trans_mode);
+      handle_package(trans_mode);
+
+      $('#tmode').click(function() { 
+      var trans_mode = $('input[name=transport_mode]:checked', '#cargo_details').val();
+        handle_vessel(trans_mode);
+        handle_package(trans_mode);
+      });        
+
+       $( "#search_pin" ).autocomplete({
+        source: function( request, response ) {
+        $.ajax({
+          url: "/forms/",
+          dataType: "json",
+          data: {q: request.term, id: 3, acc: ctype},
+          success: function( data ) {
+            response( data );
+          }
+        });
+      },
+      minLength: 4,
+      select: function( event, ui ) {
+         $('#customer_pin').val(ui.item.kra_pin);
+         $('#person_id').val(ui.item.id);
+      },
+      open: function() {
+        $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+      },
+      close: function() {
+        $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+      }
+    });
+
+    //IRC query
+    $( "#agent_name" ).autocomplete({
+        source: function( request, response ) {
+        $.ajax({
+          url: "/forms/",
+          dataType: "json",
+          data: {q: request.term, id: 4},
+          success: function( data ) {
+            response( data );
+          }
+        });
+      },
+      minLength: 5,
+      select: function( event, ui ) {
+         $('#ira_number').val(ui.item.ira_number);
+         $('#agent_id').val(ui.item.id);
+      },
+      open: function() {
+        $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+      },
+      close: function() {
+        $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+      }
+    });
+
+       //For adding goods
+        $( "#add_goods" ).click(function() {
+          //Reset errors
+          
+          $('#errors').html("");
+          $("#errors").addClass( "alert alert-danger fade in" );
+          var insurance_co = $("#insurance_co").val();
+          var quantity = $("#quantity").val();
+          var goods_type = $("#goods_type").val();
+          var package_type = $("#package_type").val();
+          var cat_id = $('#goods_category').val();
+          var goods = $('#goods_details').val();
+          var oprice = $("#price").val();
+          var price = oprice.replace(",", ""); 
+          var freight = $("#freight_cost").val();
+          var trans_mode = $('input[name=transport_mode]:checked', '#cargo_details').val();
+          if (insurance_co == ''){
+            $("#errors").html("Please select Insurance Company");
+            return false;
+          }
+          if ((package_type == '') && (trans_mode != '2')){
+            $("#errors").html("Please select packaging");
+            return false;
+          }
+          if (goods_type == ''){
+            $("#errors").html("Please select goods");
+            return false;
+          }
+           if (price == ''){
+            $("#errors").html("Please enter goods price");
+            return false;
+          }
+          if ((cat_id == '87') && (goods == '')){
+            $("#errors").html("Please provide vehicle details by clicking on more.");
+            return false;
+          }
+          if (!(isInteger(quantity))){
+               $("#errors").html("Please provide valid quantity");
+               return false;
+          }
+          if (!(isInteger(price))){
+               $("#errors").html("Please provide valid price");
+               return false;
+          }
+          if( !$.isNumeric( quantity )){
+            $("#errors").html("Please enter a valid quantity");
+            return false;
+          }
+          if( !$.isNumeric( freight)){
+            $("#errors").html("Please enter a valid Freight cost");
+            return false;
+          }
+          $('#myorders').show();
+          $.ajax({
+               type: "POST",
+               url: "{% url 'premiums' %}",
+               dataType: "json",
+               data: $("#cargo_details").serialize(),
+               success: function(data)
+               {
+                   var status = data.status;
+                   if (status == 0){
+                   $('#myorders > tbody').html(data.response);
+                   $("#total_premium").val(data.premium);
+                   $('#mypayments > tbody').html(data.taxes);
+                   $("#errors").addClass( "alert alert-success fade in" );
+                   $('#errors').html("Item added successfully");
+                   //
+                  
+                   $("#quantity").val('');
+                   $("#price").val('');
+                   $("#total_premiums").val(data.premium);
+                   $("#total_tax").val(data.tax);
+                   $("#total_freight").val(data.freight);
+                   $("#total_cost").val(data.cost);
+                   $("#total_amount").val(data.amount);
+                   $("#sum_assured").val(data.sum_assured);
+                   $('#cargo_details').parsley().validate("primary2");
+                 }else{
+                  $("#errors").addClass( "alert alert-success fade in" );
+                   $('#errors').html(data.message);
+                   //
+
+                 }
+               },
+                error: function(){
+                    $("#errors").addClass( "alert alert-danger fade in" );
+                    $('#errors').html("Error calculating premium for selected item");
+                }
+             });
+          //$('#myorders > tbody:last-child').append(goods);
+          $("#goods_type").val('');
+          $("#price_div").hide();
+          $("#errors").removeClass( "alert alert-danger fade in" );
+          $("#errors").removeClass( "alert alert-success fade in" );
+        });
+
+        $('#gdetail').click(function() {
+          var cmake = $("#car_make").val();
+          var cmodel = $("#car_model").val();
+          var cyear = $("#car_year").val();
+          var carcc = $("#car_cc").val();
+          var vals = "Make: "+cmake+"; Model: "+cmodel;
+          vals += "; Year: "+cyear+"; CC: "+carcc;
+          $("#goods_details").val(vals);
+          $('#modal-details').modal('hide');
+
+        });
+    });
+
+  function isInteger(ostr) {
+      var num = parseInt(ostr);
+      var str = num.toString();
+      var n = ~~Number(str);
+      return String(n) === str && n > 0;
+  }
+
+  function handle_package(smode) {
+        if (smode == '1'){
+            $('#package_type').attr("data-parsley-required", "true");
+            $('#package_type').prop('disabled', false);
+        }else{
+            $('#package_type').attr("data-parsley-required", "false");
+            $('#package_type').val('');
+            $('#package_type').prop('disabled', true);
+        }
+      }
+
+  function handle_vessel(trans_mode) {
+      if (trans_mode == '1'){
+           $("#vessel_name_div").show();
+           $('#vessel_name').attr("data-parsley-required", "false");
+      }else{
+        $("#vessel_name_div").hide();
+        $('#vessel_name').attr("data-parsley-required", "false");
+      }
+  }
+
+  function handle_clients(ctype){
+    if (ctype == '2'){
+          $('#etr_number_div').show();
+          $('#etr_number').attr('data-parsley-required', 'true');
+            //
+          $('#id_number_div').hide();
+          $('#id_number').attr('data-parsley-required', 'false');
+          $('#surname_div').hide();
+          $('#surname').attr('data-parsley-required', 'false');
+          $('#first_name_div').hide();
+          $('#first_name').attr('data-parsley-required', 'false');
+          $('#middle_name_div').hide();
+          $('#middle_name').attr('data-parsley-required', 'false');
+          //
+          $('#company_name_div').show();
+          $('#company_name').attr('data-parsley-required', 'true');
+          $('#coreg_number_div').show();
+          $('#coreg_number').attr('data-parsley-required', 'true');
+          $('#vat_number_div').show();
+          $('#vat_number').attr('data-parsley-required', 'true');
+          $('#phy_address_div').show();
+          $('#phy_address').attr('data-parsley-required', 'true');
+
+          $('#tax_status_div').hide();
+          $('#tax_status').attr('data-parsley-required', 'false');
+      }
+
+      // Default to individual
+      else
+      {
+          $('#etr_number_div').hide();
+          $('#etr_number').attr('data-parsley-required', 'false');
+            //
+          $('#id_number_div').show();
+          $('#id_number').attr('data-parsley-required', 'true');
+          $('#surname_div').show();
+          $('#surname').attr('data-parsley-required', 'true');
+          $('#first_name_div').show();
+          $('#first_name').attr('data-parsley-required', 'true');
+          $('#middle_name_div').show();
+          $('#middle_name').attr('data-parsley-required', 'true');
+          //
+          $('#company_name_div').hide();
+          $('#company_name').attr('data-parsley-required', 'false');
+          $('#coreg_number_div').hide();
+          $('#coreg_number').attr('data-parsley-required', 'false');
+          $('#vat_number_div').hide();
+          $('#vat_number').attr('data-parsley-required', 'false');
+          $('#phy_address_div').hide();
+          $('#phy_address').attr('data-parsley-required', 'false');
+
+          $('#tax_status_div').show();
+          $('#tax_status').attr('data-parsley-required', 'true');
+      }
+  }
+  </script>
+{% endblock lazy_js %}

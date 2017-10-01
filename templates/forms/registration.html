@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+
+{% block page_title %} 
+{{block.super}} Registration
+{% endblock page_title%}
+
+{% load staticfiles %}
+{% load app_filters %}
+
+{% block style_code %}
+{% endblock style_code %}
+
+
+{% block javascript_code %}
+{% endblock javascript_code %}
+
+{% block primary %}
+
+<ol class="breadcrumb pull-right">
+  <li><a href="javascript:;">Home</a></li>
+  <li><a href="javascript:;">Page</a></li>
+  <li class="active">User Registration</li>
+</ol>
+<!-- end breadcrumb -->
+<!-- begin page-header -->
+<h1 class="page-header"><i class="fa fa-pencil"></i> Users <small>Registration</small></h1>
+<!-- end page-header -->
+{% if messages %}
+          {% for message in messages %}
+          {% if 'error' in message.tags %}
+              <div id="messages" class="alert alert-danger fade in">
+              <span class="close" data-dismiss="alert">×</span>
+              <i class="fa fa-info fa-2x pull-left"></i>
+          {% else %}
+              <div id="messages" class="alert alert-success fade in">
+              <span class="close" data-dismiss="alert">×</span>
+              <i class="fa fa-check fa-2x pull-left"></i>
+          {% endif %}    
+              <p>{{ message }}</p>
+          </div>
+         {% endfor %}
+      {% endif %}
+
+<div class="panel panel-inverse">
+    <div class="panel-heading">
+        <div class="panel-heading-btn">
+
+            <a href="#" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
+
+            <a href="#" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+        </div>
+        <h4 class="panel-title">Registration details</h4>
+    </div>
+  <div class="panel-body">
+  <form action="." data-parsley-validate="true" name="register_form" method="POST">
+   {% csrf_token %}
+   <input type="hidden" name="edit_type" id="edit_type" value="1">
+      <div class="row">
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label">Client Type</label>
+              <select class="form-control" id="client_type" name="client_type" data-parsley-required="true" data-parsley-errors-container="#client_error" disabled="">
+                <option value="">Select Client Type</option>
+                <option value="1" selected="">Individual</option>
+                <option value="2">Company</option>
+              </select>
+              <span id="client_error"></span>
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label">Staff Number</label>
+              {{ form.staff_number }}
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="id_number_div">
+            <div class="form-group">
+              <label class="control-label">ID / Passport</label>
+              {{ form.id_number }}
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="etr_number_div">
+            <div class="form-group">
+              <label class="control-label">ETR Number</label>
+              <input type="text" name="etr_number" id="etr_number" class="form-control" />
+            </div>
+          </div><!-- col-sm-6 -->
+        </div><!-- row -->
+        <div class="row">
+          <div class="col-sm-4" id="surname_div">
+            <div class="form-group">
+              <label class="control-label">Surname</label>
+              {{ form.surname }}
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="first_name_div">
+            <div class="form-group">
+              <label class="control-label">First Name</label>
+              {{ form.first_name }}
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="middle_name_div">
+            <div class="form-group">
+              <label class="control-label">Middle Name</label>
+              {{ form.middle_name }}
+            </div>
+          </div>
+          <div class="col-sm-4" id="company_name_div">
+            <div class="form-group">
+              <label class="control-label">Company Name</label>
+              <input type="text" name="company_name" id="company_name" class="form-control" />
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="coreg_number_div">
+            <div class="form-group">
+              <label class="control-label">Company Registration Number</label>
+              <input type="text" name="coreg_number" id="coreg_number" class="form-control" />
+            </div>
+          </div><!-- col-sm-6 -->
+          <div class="col-sm-4" id="vat_number_div">
+            <div class="form-group">
+              <label class="control-label">VAT Number</label>
+              <input type="text" name="vat_number" id="vat_number" class="form-control" />
+            </div>
+          </div>
+        </div><!-- row -->
+        <div class="row">
+        <div class="col-sm-4">
+                <div class="form-group">
+                  <label class="control-label">Email</label>
+                  {{ form.email }}
+              </div>
+              </div>
+          <div class="col-sm-4">
+                <div class="form-group">
+                  <label class="control-label">Mobile Number</label>
+                  <input type="number" name="mobile_number" id="mobile_number" class="form-control" />
+              </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label class="control-label">Postal Address</label>
+                  {{ form.postal_address }}
+                </div>
+              </div>
+        </div>
+        <div class="row">
+        <div class="form-group">
+            <div class="col-md-8 col-md-offset-4">
+                <button type="submit" class="btn btn-sm btn-primary m-r-5">Register</button>
+                <button type="submit" class="btn btn-sm btn-default">Cancel</button>
+            </div>
+        </div>
+      </div>
+            
+    </div>
+        
+  </div><!-- row -->
+</form>
+
+{% endblock primary %}
+
+{% block lazy_js %}
+
+<script>
+$(document).ready(function(){
+    
+  // Chosen Select
+
+  var client_type = $("#client_type").val();
+
+  handle_clients(client_type);
+
+  $("#client_type").change(function(e) {
+      var client_type = $("#client_type").val();
+      handle_clients(client_type);
+  }); 
+
+});
+
+function handle_clients(client_type){
+       // Company
+      if (client_type == '2')
+      {
+          $('#etr_number_div').show();
+          $('#etr_number').attr('data-parsley-required', 'true');
+            //
+          $('#id_number_div').hide();
+          $('#id_number').attr('data-parsley-required', 'false');
+          $('#surname_div').hide();
+          $('#surname').attr('data-parsley-required', 'false');
+          $('#first_name_div').hide();
+          $('#first_name').attr('data-parsley-required', 'false');
+          $('#middle_name_div').hide();
+          $('#middle_name').attr('data-parsley-required', 'false');
+          //
+          $('#company_name_div').show();
+          $('#company_name').attr('data-parsley-required', 'true');
+          $('#coreg_number_div').show();
+          $('#coreg_number').attr('data-parsley-required', 'true');
+          $('#vat_number_div').show();
+          $('#vat_number').attr('data-parsley-required', 'true');
+          $('#tax_status_div').hide();
+          $('#tax_status').attr('data-parsley-required', 'false');
+          
+      }
+
+      // Default to individual
+      else
+      {
+          $('#etr_number_div').hide();
+          $('#etr_number').attr('data-parsley-required', 'false');
+            //
+          $('#id_number_div').show();
+          $('#id_number').attr('data-parsley-required', 'true');
+          $('#mobile_number').attr('data-parsley-required', 'true');
+          $('#staff_number').attr('data-parsley-required', 'true');
+          $('#surname_div').show();
+          $('#surname').attr('data-parsley-required', 'true');
+          $('#first_name_div').show();
+          $('#first_name').attr('data-parsley-required', 'true');
+          $('#middle_name_div').show();
+          $('#middle_name').attr('data-parsley-required', 'true');
+          //
+          $('#company_name_div').hide();
+          $('#company_name').attr('data-parsley-required', 'false');
+          $('#coreg_number_div').hide();
+          $('#coreg_number').attr('data-parsley-required', 'false');
+          $('#vat_number_div').hide();
+          $('#vat_number').attr('data-parsley-required', 'false');
+      }
+  }
+</script>
+{% endblock lazy_js %}

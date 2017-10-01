@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block page_title %} 
+{{block.super}} Registrations
+{% endblock page_title%}
+
+{% load staticfiles %}
+
+{% block style_code %}
+<style type="text/css">
+  table {
+   border: 2px solid black;
+   border-collapse: collapse;
+}
+ tr.border_bottom td {
+  border-bottom:1pt solid black;
+}
+</style>
+{% endblock style_code %}
+
+
+{% block javascript_code %}
+{% endblock javascript_code %}
+
+{% block primary %}
+
+<!-- begin breadcrumb -->
+      <ol class="breadcrumb pull-right">
+        <li><a href="javascript:;">Home</a></li>
+        <li><a href="javascript:;">Marine Insurance</a></li>
+        <li class="active">Registrations</li>
+      </ol>
+      <!-- end breadcrumb -->
+      <!-- begin page-header -->
+      <h1 class="page-header"><i class="fa fa-suitcase"></i> Registrations <small> Pending registrations</small></h1>
+      <!-- end page-header -->
+      {% if messages %}
+          {% for message in messages %}
+          {% if 'error' in message.tags %}
+              <div id="messages" class="alert alert-danger fade in">
+              <span class="close" data-dismiss="alert">×</span>
+              <i class="fa fa-info fa-2x pull-left"></i>
+          {% else %}
+              <div id="messages" class="alert alert-success fade in">
+              <span class="close" data-dismiss="alert">×</span>
+              <i class="fa fa-check fa-2x pull-left"></i>
+          {% endif %}    
+              <p>{{ message }}</p>
+          </div>
+         {% endfor %}
+      {% endif %}
+      
+      <div class="panel panel-inverse">
+          <div class="panel-heading">
+              <div class="panel-heading-btn">
+
+                  <a href="#" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
+
+                  <a href="#" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+              </div>
+              <h4 class="panel-title">Registrations</h4>
+          </div>
+          <div class="panel-body">
+
+          <p></p>
+          <a href="{% url 'new_user' %}"><button type="button" class="btn btn-sm btn-primary m-r-5"><i class="fa fa-pencil"></i>&nbsp; New User</button></a>
+          <hr>
+
+          <table width="100%" class="table">
+              <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Names</th>
+                    <th>Telephone</th>
+                    <th>Email</th>
+                    <th></th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for registration in registrations %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    {% if registration.regperson.id %}
+                    <td>{{ registration.regperson.full_name }}</td>
+                    <td>{{ registration.regperson.mobile_number }}</td>
+                    {% else %}
+                    <td>{{ registration.regcompany.company_name }}</td>
+                    <td>{{ registration.regcompany.mobile_number }}</td>
+                    {% endif %}
+                    <td>{{ registration.email }}</td>
+                    <td>
+                    <a href="{% url 'regv' id=registration.id %}"><button type="button" class="btn btn-success">Edit Account</button></a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table> 
+
+    </div>
+    <!-- end panel-body -->
+
+</div>
+<!-- end panel -->
+
+{% endblock primary %}
+
+{% block lazy_js %}
+
+
+{% endblock lazy_js %}

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block page_title %} 
+{{block.super}} Bonds application
+{% endblock page_title%}
+
+{% load staticfiles %}
+
+{% block style_code %}
+<style type="text/css">
+  table {
+   border: 2px solid black;
+   border-collapse: collapse;
+}
+ tr.border_bottom td {
+  border-bottom:1pt solid black;
+}
+</style>
+{% endblock style_code %}
+
+
+{% block javascript_code %}
+{% endblock javascript_code %}
+
+{% block primary %}
+
+<!-- begin breadcrumb -->
+      <ol class="breadcrumb pull-right">
+        <li><a href="javascript:;">Home</a></li>
+        <li><a href="javascript:;">Marine Insurance</a></li>
+        <li class="active">Guarantee / Custom Bonds</li>
+      </ol>
+      <!-- end breadcrumb -->
+      <!-- begin page-header -->
+      <h1 class="page-header"><i class="fa fa-suitcase"></i> Guarantee / Custom bonds <small> application</small></h1>
+      <!-- end page-header -->
+      
+      <div class="panel panel-inverse">
+          <div class="panel-heading">
+              <div class="panel-heading-btn">
+
+                  <a href="#" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
+
+                  <a href="#" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+              </div>
+              <h4 class="panel-title">Guarantee / Custom Bonds</h4>
+          </div>
+          <div class="panel-body">
+                <form class="form-horizontal form-bordered" action="." method="POST" data-parsley-validate="true">
+                {% csrf_token %}
+                <input type="hidden" name="insurance_co" id="insurance_co" value="{{ CO_ID }}">
+                    <fieldset>
+                        <legend>Bond application</legend>
+                        
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Bond Class</label>
+                            <div class="col-md-4">
+                                {{ form.bond_class }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Amount</label>
+                            <div class="col-md-4">
+                                {{ form.bond_amount }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <button type="submit" class="btn btn-primary" value="submit">Submit</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>         
+          </div>
+          <!-- end panel-body -->
+
+      </div>
+      <!-- end panel -->
+
+{% endblock primary %}
+
+{% block lazy_js %}
+<script src="{% static 'plugins/autoNumeric/dist/autoNumeric.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+
+      $('#bond_amount').autoNumeric('init');
+    });
+</script>
+{% endblock lazy_js %}

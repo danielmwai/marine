@@ -1,0 +1,297 @@
+{% extends 'base_main.html' %}
+{% load staticfiles %}
+{% block page_title %}
+{{block.super}} Log in 
+{% endblock page_title %}
+{% block primary %}
+<!-- BEGIN #my-account -->
+<div id="about-us-cover" class="section-container">
+    <!-- BEGIN container -->
+    <div class="container">
+        <!-- BEGIN breadcrumb -->
+        <ul class="breadcrumb m-b-10 f-s-12">
+           <li><a href="{% url 'home' %}">Home</a></li>
+
+        <li><a href="{% url 'login' %}">Marine Insurance</a></li>
+            {% if user.is_authenticated %}
+            <li class="active">My Account</li>
+            {% else %}
+          <a href="{% url 'login' %}"></a>
+          {% endif %}
+        </ul>
+        <!-- END breadcrumb -->
+        <!-- BEGIN account-container -->
+        <div class="account-container">
+            <!-- BEGIN account-sidebar -->
+            <div class="account-sidebar">
+                {% if SITE_ID  == 1 %}
+                    <div class="account-sidebar-cover">
+                        <img src="{% static 'img/my-account-cover.jpg' %}" alt="" />
+                    </div>
+                    <div class="account-sidebar-content">
+                        <p></p>
+                        <h4><center>Visionary Connectivity</center></h4>
+                    </div>
+                                  
+                {% else %}
+                  {% with SITE_IDT|add:'/img/ship.jpg' as image_static %}                                     
+                  <div class="account-sidebar-cover">
+                      <img src="{% static image_static %}" alt="" />
+                  </div>
+                  <div class="account-sidebar-content">
+                      <p></p>
+                  </div>
+                  {% endwith %}
+                {% endif %}                
+            </div>
+            <!-- END account-sidebar -->
+            <!-- BEGIN account-body -->
+            <div class="account-body">
+                <!-- BEGIN row -->
+                <div class="row">
+                    <div class="row" id="errors">
+                    {% if messages %}
+                      {% for message in messages %}
+                        {% if 'error' in message.tags %}
+                      <div id="messages" class="alert alert-danger fade in m-b-15">
+                      <span class="close" data-dismiss="alert">×</span>
+                      <i class="fa fa-info fa-2x pull-left"></i>
+                        {% else %}
+                      <div id="messages" class="alert alert-success fade in">
+                      <span class="close" data-dismiss="alert">×</span>
+                      <i class="fa fa-check fa-2x pull-left"></i>
+                        {% endif %}    
+                      <p>{{ message }}</p>
+                        </div>
+                     {% endfor %}
+                  {% endif %}
+                  {% if form.errors %}
+                      <div id="messages" class="alert alert-danger fade in m-b-15">
+                      <span class="close" data-dismiss="alert">×</span>
+                      <i class="fa fa-info fa-2x pull-left"></i>
+                      {{ form.non_field_errors }}
+                      </div>
+                  {% endif %}
+                </div>
+                    <!-- BEGIN col-6 -->
+                    <div class="col-md-6">
+                        <h4><i class="fa fa-lock text-muted"></i> Login details</h4>
+                        
+                        <form form method="post" action="{{ request.get_full_path }}" data-parsley-validate="true" class="margin-bottom-0" id="loginform">
+                            {% csrf_token %}
+                            
+                            <div class="form-group m-b-20">
+                                {{ form.email }}
+                            </div>
+                            <div class="form-group m-b-20">
+                                 {{ form.password }}
+                            </div>
+                            <div class="login-buttons btn-block">
+                                <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                                <a href="{% url 'register' %}">
+                                <button type="button" class="btn btn-primary  btn-lg">Register</button></a>
+                                {% if email %}
+                                <button type="button" class="btn btn-primary btn-lg" id="elink">Send Link</button>
+                                {% endif %}
+                            </div>
+                            <div class="m-t-20">
+                                Not a member yet? Click <a href="{% url 'register' %}">here</a> to register.
+                            <br />
+                                Forgot password? Click <a href="#">here</a> to reset.
+                            </div>
+                        </form>
+                    </div>
+                    <!-- END col-6 -->
+                    {% if CO_ID > 1  and CO_TYPE > 0 %}
+                    <!-- BEGIN col-6 -->
+                    <div class="col-md-6" style="border:1px solid #ccc; border-radius: 15px;">
+                      <form form method="post" action="{% url 'quote' %}" data-parsley-validate="true" class="margin-bottom-0" id="quoteform">
+                        {% csrf_token %}
+                        {{ qform.currency_id }}
+                        {{ qform.currency_value }}
+                      <input type="hidden" name="insurance_co" id="insurance_co" value="{{ CO_ID }}">
+                      <h4> <i class="fa fa-pencil text-muted"></i> Get a Quote</h4>
+                        <div class="row">
+                        <div class="form-group col-md-12">
+                          <label>Category of Goods</label>
+                            {{ qform.goods_category }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6" >
+                          <label>Shipping Mode</label>
+                            {{ qform.shipping_mode }}
+                        </div>
+                        <div class="form-group col-md-6" >
+                          <label>Package Type</label>
+                            {{ qform.package_type }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                          <label>Sum Insured</label>
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-primary"><span id="cid">KES</span></button>
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#" class="curr" id="KES">KES</a></li>
+                                        <li><a href="#" class="curr" id="USD">USD</a></li>
+                                    </ul>
+                                </div>
+                                {{ qform.sum_assured }}
+                                <span class="input-group-addon" id="basic-addon2">@<span id="cval">1.00</span></span>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-12 col-md-offset-2">
+                                <button type="submit" class="btn btn-sm btn-primary m-r-5"> <i class="fa fa-shopping-cart" aria-hidden="true"></i> Get a Quote</button>
+                                <a href="{% url 'home' %}">
+                                <button type="button" class="btn btn-sm btn-default">Cancel</button></a>
+                            </div>
+                        </div>
+                    </div>
+                    <p></p>
+                    </form>
+                    </div>
+                    {% else %}
+                    <div class="col-md-6" style="border:1px solid #ccc; border-radius: 15px; min-height: 280px;">
+                    
+                    <form class="form-horizontal form-bordered" action="." method="POST" data-parsley-validate="true" name="cert_verify" id="cert_verify">
+                    {% csrf_token %}
+                    <h4><i class="fa fa-pencil text-muted"></i> Validate Marine Certificate</h4>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 col-sm-4" for="setting_id">Certificate No.:</label>
+                            <div class="col-md-8 col-sm-8">
+                                {{ vform.cert_number }}
+                            </div>                            
+                        </div>
+                        <div class="form-group">
+                        {{ vform.captcha }}
+                        </div>
+                        <div class="row">
+                        <div class="form-group">
+                            <label class="control-label col-md-4 col-sm-4" for="setting_id"></label>
+                            <div class="col-md-8 col-sm-8">
+                                <button type="submit" class="btn btn-sm btn-primary m-r-5"> Validate</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin:10px;" id="cstatus">
+                    
+                    </div>
+                    </div>
+                    </form>
+                    </div>
+                    {% endif %}
+                    <!-- END col-6 -->
+                </div>
+                <!-- END row -->
+            </div>
+            <!-- END account-body -->
+        </div>
+        <!-- END account-container -->
+    </div>
+    <!-- END container -->
+</div>
+<!-- END #about-us-cover -->
+{% endblock primary %}
+{% block lazy_js %}
+<script src="{% static 'plugins/select2/dist/js/select2.min.js' %}"></script>
+<script src="{% static 'plugins/autoNumeric/dist/autoNumeric.js' %}"></script>
+<script>
+    $(document).ready(function() {
+
+      $('#sum_assured').autoNumeric('init');
+      $('#goods_category').html('{{ categories|safe }}');
+
+      $(".captcha-question").addClass( "control-label col-md-5 col-sm-5");
+
+      $('#currency_id').val('KES');
+
+      $('a.curr').click(function() { 
+        var id = $(this).attr('id');
+        $('#cid').html(id);
+        var rate;
+        if (id == 'USD'){
+           rate = 102.45;
+        }else{
+           rate = 1.000; 
+        }
+        $('#cval').html(rate);
+        $('#currency_value').val(rate);
+        $('#currency_id').val(id);
+        return false;
+      });
+
+      var smode = $("#shipping_mode").val();
+      handle_package(smode);
+
+      $('#shipping_mode').change(function(){
+          var smode = $("#shipping_mode").val();
+          handle_package(smode);
+      });
+
+      $("#elink").click(function(e) {
+          $('#errors').html("Working ....");
+          $.ajax({
+               type: "POST",
+               url: "{% url 'account' %}",
+               dataType: "json",
+               data: $("#loginform").serialize(),
+               success: function(data)
+               {
+                   $("#errors").addClass( "alert alert-success fade in" );
+                   $('#errors').html("Verification email sent successfully");
+               },
+                error: function(){
+                    $("#errors").addClass( "alert alert-danger fade in" );
+                    $('#errors').html("Error sending verification email");
+                }
+             });
+      });
+
+      $("#cert_verify").submit(function(e){
+            e.preventDefault();
+            $("#cstatus").removeClass( "alert alert-danger fade in" );
+            $.ajax({
+               type: "POST",
+               url: "{% url 'cverify' %}",
+               dataType: "json",
+               data: $("#cert_verify").serialize(),
+               success: function(data)
+               {
+                   var res = data.msg;
+                   var code = data.code;
+                   if (code == 0){
+                    $("#cstatus").addClass( "alert alert-success fade in" );
+                  }else{
+                    $("#cstatus").addClass( "alert alert-danger fade in" );
+                  }
+                   $('#cstatus').html(res);
+               },
+                error: function(){
+                    $("#cstatus").addClass( "alert alert-danger fade in" );
+                    $('#cstatus').html("Error checking certificate.");
+                }
+             });
+       });
+
+      function handle_package(smode) {
+        if (smode == '1'){
+            $('#package_type').attr("data-parsley-required", "true");
+            $('#package_type').prop('disabled', false);
+        }else{
+            $('#package_type').attr("data-parsley-required", "false");
+            $('#package_type').val('');
+            $('#package_type').prop('disabled', true);
+        }
+        // body...
+      }
+  });
+</script>
+{% endblock lazy_js %}

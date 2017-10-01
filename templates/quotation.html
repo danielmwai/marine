@@ -1,0 +1,204 @@
+{% extends 'base_main.html' %}
+{% load staticfiles %}
+
+{% block page_title %} 
+{{block.super}} Get a quotation
+{% endblock page_title %}
+
+{% block style_code %}
+<style type="text/css">
+  .my-group .form-control{ 
+    width:50%;
+   }
+}
+
+</style>
+{% endblock style_code %}
+
+{% block primary %}
+<!-- BEGIN #my-account -->
+<div id="about-us-cover" class="section-container">
+    <!-- BEGIN container -->
+    <div class="container">
+        <!-- BEGIN breadcrumb -->
+        <ul class="breadcrumb m-b-10 f-s-12">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Marine Insurance</a></li>
+            <li class="active">Quotation</li>
+        </ul>
+        <!-- END breadcrumb -->
+        <!-- BEGIN account-container -->
+        <div class="account-container">
+            <!-- BEGIN account-sidebar -->
+            <div class="account-sidebar">
+                {% if SITE_ID  == 1 %}
+                    <div class="account-sidebar-cover">
+                        <img src="{% static 'img/my-account-cover.jpg' %}" alt="" />
+                    </div>
+                    <div class="account-sidebar-content">
+                        <p></p>
+                        <h4><center>Visionary Connectivity</center></h4>
+                    </div>
+                                  
+                {% else %}
+                  {% with SITE_IDT|add:'/img/ship.jpg' as image_static %}                                     
+                  <div class="account-sidebar-cover">
+                      <img src="{% static image_static %}" alt="" />
+                  </div>
+                  <div class="account-sidebar-content">
+                      <p></p>
+                  </div>
+                  {% endwith %}
+                {% endif %}
+            </div>
+            <!-- END account-sidebar -->
+            <!-- BEGIN account-body -->
+            <div class="account-body">
+                <div class="row">
+                    {% if messages %}
+                      {% for message in messages %}
+                        {% if 'error' in message.tags %}
+                      <div id="messages" class="alert alert-danger fade in m-b-15">
+                      <span class="close" data-dismiss="alert">×</span>
+                      <i class="fa fa-info fa-2x pull-left"></i>
+                        {% else %}
+                      <div id="messages" class="alert alert-success fade in">
+                      <span class="close" data-dismiss="alert">×</span>
+                      <i class="fa fa-check fa-2x pull-left"></i>
+                        {% endif %}    
+                      <p>{{ message }}</p>
+                        </div>
+                     {% endfor %}
+                  {% endif %}
+                </div>
+                <!-- BEGIN row -->
+                <div class="row">
+                <form class="form-horizontal" action="." method="POST" data-parsley-validate="true">
+                {% csrf_token %}
+                {{ form.currency_id }}
+                {{ form.currency_value }}
+                <input type="hidden" name="insurance_co" id="insurance_co" value="{{ CO_ID }}">
+                    <fieldset>
+                        <legend>Get Instant Quote</legend>
+                        
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Category</label>
+                            <div class="col-md-8">
+                                {{ form.goods_category }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Shipping Details</label>
+                            <div class="col-md-4">
+                                <label class="control-label">Shipping Mode</label>
+                                {{ form.shipping_mode }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label">Packaging Type</label>
+                                {{ form.package_type }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Sum Insured <br/> <small>Invoice Amount + Freight Cost + Taxes</small> </label>
+                            <div class="col-md-8">
+                                
+                            
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-primary"><span id="cid">KES</span></button>
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#" class="curr" id="KES">KES</a></li>
+                                        <li><a href="#" class="curr" id="USD">USD</a></li>
+                                    </ul>
+                                </div>
+                                {{ form.sum_assured }}
+                                <span class="input-group-addon" id="basic-addon2">@<span id="cval">1.00</span></span>
+                              </div>
+                              </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Contacts</label>
+                            <div class="col-md-4">
+                                {{ form.email }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.mobile_number }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-8 col-md-offset-4">
+                                <button type="submit" class="btn btn-sm btn-primary m-r-5"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Get a Quote</button>
+                                <a href="{% url 'home' %}">
+                                <button type="button" class="btn btn-sm btn-default">Cancel</button></a>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+
+                </div>
+                <!-- END row -->
+            </div>
+            <!-- END account-body -->
+        </div>
+        <!-- END account-container -->
+    </div>
+    <!-- END container -->
+</div>
+<!-- END #about-us-cover -->
+{% endblock primary %}
+
+{% block lazy_js %}
+
+<script src="{% static 'plugins/autoNumeric/dist/autoNumeric.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+      $('#sum_assured').autoNumeric('init');
+      $('#currency_id').val('KES');
+
+      $('a.curr').click(function() { 
+          var id = $(this).attr('id');
+          $('#cid').html(id);
+          var rate;
+          if (id == 'USD'){
+             rate = 102.45;
+          }else{
+             rate = 1.000; 
+          }
+          $('#cval').html(rate);
+          $('#currency_value').val(rate);
+          $('#currency_id').val(id);
+          return false; 
+      });
+
+      var smode = $("#shipping_mode").val();
+      handle_package(smode);
+
+      $('#shipping_mode').change(function(){
+          var smode = $("#shipping_mode").val();
+          handle_package(smode);
+      });
+
+      $('#goods_section').attr("data-parsley-required", "true");
+      $('#sum_assured').attr("data-parsley-required", "true");
+
+      $('#goods_category').html('{{ categories|safe }}');
+      $('#goods_category').val('{{ category }}');
+
+      function handle_package(smode) {
+        if (smode == '1'){
+            $('#package_type').attr("data-parsley-required", "true");
+            $('#package_type').prop('disabled', false);
+        }else{
+            $('#package_type').attr("data-parsley-required", "false");
+            $('#package_type').val('');
+            $('#package_type').prop('disabled', true);
+        }
+      }
+    });
+</script>
+
+{% endblock lazy_js %}

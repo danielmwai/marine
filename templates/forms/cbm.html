@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block page_title %} 
+{{block.super}} CBM Calculator
+{% endblock page_title%}
+
+{% load staticfiles %}
+
+{% block style_code %}
+<style type="text/css">
+  table {
+   border: 2px solid black;
+   border-collapse: collapse;
+}
+ tr.border_bottom td {
+  border-bottom:1pt solid black;
+}
+</style>
+{% endblock style_code %}
+
+
+{% block javascript_code %}
+{% endblock javascript_code %}
+
+{% block primary %}
+
+<!-- begin breadcrumb -->
+      <ol class="breadcrumb pull-right">
+        <li><a href="javascript:;">Home</a></li>
+        <li><a href="javascript:;">Marine Insurance</a></li>
+        <li class="active">CBM Calculator</li>
+      </ol>
+      <!-- end breadcrumb -->
+      <!-- begin page-header -->
+      <h1 class="page-header"><i class="fa fa-suitcase"></i> CBM Calculator <small> to cartons</small></h1>
+      <!-- end page-header -->
+      
+      <div class="panel panel-inverse">
+          <div class="panel-heading">
+              <div class="panel-heading-btn">
+
+                  <a href="#" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
+
+                  <a href="#" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+              </div>
+              <h4 class="panel-title">CBM</h4>
+          </div>
+          <div class="panel-body">
+
+          <table width="100%" class="table">
+              
+<div id="divContiner" style="width:100%;margin:0px;padding:3px;"> 
+<form name="frmCuft">
+<div id="divfrm1">
+Carton Dim. :<span id="labelL"> L </span><input name="l" id="l" type="number" class="ipt" onchange="ac();" onkeyup="ac();"> 
+<span id="labelW"> * W </span><input name="w" id="w" type="number" class="ipt" onchange="ac();" onkeyup="ac();">
+<span id="labelH"> * H </span><input name="h" id="h" type="number" class="ipt" onchange="ac();" onkeyup="ac();"> <span id="unitl">cm</span>
+</div>
+<div>
+Carton G.W. : <input name="gw" id="gw" type="number" class="ipt" onchange="ac();" onkeyup="ac();"> <span id="unitw"> kgs</span>,
+Carton Quantity : <input name="q" id="q" type="number" class="ipt" value="1" onchange="ac();" onkeyup="ac();"> ctns
+</div>
+<div id="msg" style="padding:2px;margin:0px;background-color:#FFFFCC"></div>
+<div id="msg2" style="padding:2px;margin:0px;background-color:#FFCCFF"></div>
+</form>
+</div>
+
+          <div class="row" id="form_actions">
+                <div class="form-group">
+                    <label class="control-label col-md-4 col-sm-4"></label>
+                    <div class="col-md-6 col-sm-6">
+                        <button type="submit" class="btn btn-primary" value="submit" >Submit</button>
+                        <a href="#">
+                        <button type="button" class="btn btn-default">Cancel</button>
+                        </a>
+                    </div>
+                </div>
+            </div>  
+    </div>
+    <!-- end panel-body -->
+
+</div>
+<!-- end panel -->
+
+{% endblock primary %}
+
+{% block lazy_js %}
+<script src="{% static 'js/cbm.js' %}"></script>
+
+{% endblock lazy_js %}

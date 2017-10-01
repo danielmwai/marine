@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block page_title %} 
+{{block.super}} Re-insurance set up
+{% endblock page_title%}
+
+{% load staticfiles %}
+
+{% block style_code %}
+{% endblock style_code %}
+
+
+{% block javascript_code %}
+{% endblock javascript_code %}
+
+{% block primary %}
+
+<!-- begin breadcrumb -->
+      <ol class="breadcrumb pull-right">
+        <li><a href="javascript:;">Home</a></li>
+        <li><a href="javascript:;">Marine Insurance</a></li>
+        <li class="active"> Re-insurance set up</li>
+      </ol>
+      <!-- end breadcrumb -->
+      <!-- begin page-header -->
+      <h1 class="page-header"><i class="fa fa-home"></i>  Re-insurance <small> Insurance company set up</small></h1>
+      <!-- end page-header -->
+      {% if messages %}
+          {% for message in messages %}
+          {% if 'error' in message.tags %}
+              <div id="messages" class="alert alert-danger fade in">
+              <span class="close" data-dismiss="alert">×</span>
+              <i class="fa fa-info fa-2x pull-left"></i>
+          {% else %}
+              <div id="messages" class="alert alert-success fade in">
+              <span class="close" data-dismiss="alert">×</span>
+              <i class="fa fa-check fa-2x pull-left"></i>
+          {% endif %}    
+              <p>{{ message }}</p>
+          </div>
+         {% endfor %}
+      {% endif %}
+      
+      <div class="panel panel-inverse">
+          <div class="panel-heading">
+              <div class="panel-heading-btn">
+
+                  <a href="#" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
+
+                  <a href="#" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+              </div>
+              <h4 class="panel-title"> Re-insurance set up</h4>
+          </div>
+          <div class="panel-body">
+          <form class="form-horizontal form-bordered" action="." method="POST" data-parsley-validate="true" name="form-wizard" id="new_setup">
+          {% csrf_token %}
+          <div class="row">
+              <div class="form-group">
+                  <label class="control-label col-md-4 col-sm-4" for="setting_id">Insurance Retention Limit:</label>
+                  <div class="col-md-3 col-sm-3">
+                      <input class="form-control" name="setup_INSLM" id="setup_INSLM" data-parsley-required="true" value="{{ vals.INSLM }}">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-4 col-sm-4" for="setting_id">Certificates Serial Range : </label>
+                  <div class="col-md-3 col-sm-3">
+                   from
+                      <input class="form-control" name="setup_INSSR" id="setup_INSSR" data-parsley-required="true" value="{{ vals.INSSR }}">
+                  </div>
+                  <div class="col-md-3 col-sm-3">
+                      to
+                      <input class="form-control" name="setup_INSER" id="setup_INSER" data-parsley-required="true" value="{{ vals.INSER }}">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-4 col-sm-4" for="setting_id">Sum Insured Amount Over Retention Limit:</label>
+                  <div class="col-md-3 col-sm-3">
+                      <input class="form-control" name="setup_INSRL" id="setup_INSRL" data-parsley-required="true" value="{{ vals.INSRL }}">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-4 col-sm-4" for="setting_id">Optional Insurance Extras:</label>
+                  <div class="col-md-3 col-sm-3">
+                      
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-4 col-sm-4" for="setting_id">Co-Insurance set-up:</label>
+                  <div class="col-md-3 col-sm-3">
+                      
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-4 col-sm-4" for="setting_id"></label>
+                  <div class="col-md-4 col-sm-4">
+                      <button type="submit" class="btn btn-primary" value="submit" id="s1">Submit</button>
+                  </div>
+              </div>
+          </div>
+          <div class="divider pull-left width-full"></div>         
+        </form>
+        
+    </div>
+    <!-- end panel-body -->
+
+</div>
+<!-- end panel -->
+
+{% endblock primary %}
+
+{% block lazy_js %}
+
+
+{% endblock lazy_js %}
